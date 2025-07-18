@@ -3,6 +3,89 @@ package com.example.welog.service;
 import com.example.welog.dto.UserCreateDto;
 import com.example.welog.dto.UserPatchDto;
 import com.example.welog.dto.UserResponseDto;
+import com.example.welog.exception.ResourceNotFoundException;
+import com.example.welog.model.User;
+import com.example.welog.repository.UserRepository;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class UserService {
+    private final UserRepository repo;
+
+    private UserResponseDto convertToResponseDto(User user) {
+        return new UserResponseDto(
+                user.getId(),
+                user.getName(),
+                user.getEmail(),
+                user.getPhoto()
+        );
+    }
+
+    public UserService(UserRepository repo) {
+        this.repo = repo;
+    }
+
+    public List<UserResponseDto> getAll(Pageable pageable) {
+        Page<User> page = repo.findAll(PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSortOr(Sort.by(Sort.Direction.ASC, "id"))));
+
+        return page.getContent().stream()
+                .map(this::convertToResponseDto)
+                .toList();
+    }
+
+    public UserResponseDto get(Long id) {
+        if (!repo.existsById(id)) {
+            throw new ResourceNotFoundException("User not found with id: " + id);
+        }
+
+        return convertToResponseDto(repo.findById(id).get());
+    }
+
+    public UserResponseDto create(UserCreateDto userCreateDto) {
+        if (userCreateDto.getName() == null || userCreateDto.getEmail() == null || userCreateDto.getPassword() == null || userCreateDto.getPasswordConfirm() == null) {
+            throw new IllegalArgumentException("Name, email, password, and password confirmation must not be null");
+        }
+
+        if (!userCreateDto.getPassword().equals(userCreateDto.getPasswordConfirm())) {
+            throw new IllegalArgumentException("Password and password confirmation do not match");
+        }
+
+        User user = new User();
+        user.setName(userCreateDto.getName());
+        user.setEmail(userCreateDto.getEmail());
+        user.setPassword(userCreateDto.getPassword()); // In a real application, hash the password
+
+        return convertToResponseDto(repo.save(user));
+    }
+
+    public UserResponseDto update(Long id, UserPatchDto userPatchDto) {
+        if (!repo.existsById(id)) {
+            throw new ResourceNotFoundException("User not found with id: " + id);
+        }
+
+        User existingUser = repo.findById(id).get();
+
+        if (userPatchDto.getName() != null) existingUser.setName(userPatchDto.getName());
+        if (userPatchDto.getEmail() != null) existingUser.setEmail(userPatchDto.getEmail());
+        if (userPatchDto.getPhoto() != null) existingUser.setPhoto(userPatchDto.getPhoto());
+
+        return convertToResponseDto(repo.save(existingUser));
+    }
+
+    public void delete(Long id) {
+        if (!repo.existsById(id)) {
+            throw new ResourceNotFoundException("User not found with id: " + id);
+        }
+        repo.deleteById(id);
+    }
+}
 
 // import com.example.welog.dto.UserCreateDto;
 // import com.example.welog.dto.UserResponseDto;
@@ -111,83 +194,3 @@ import com.example.welog.dto.UserResponseDto;
 //         );
 //     }
 // }
-
-import com.example.welog.model.User;
-import com.example.welog.repository.UserRepository;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-
-@Service
-public class UserService {
-    private final UserRepository repo;
-
-    private UserResponseDto convertToResponseDto(User user) {
-        return new UserResponseDto(
-                user.getId(),
-                user.getName(),
-                user.getEmail(),
-                user.getPhoto()
-        );
-    }
-
-    public UserService(UserRepository repo) {
-        this.repo = repo;
-    }
-
-    public List<UserResponseDto> getAll(Pageable pageable) {
-        Page<User> page = repo.findAll(PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSortOr(Sort.by(Sort.Direction.ASC, "id"))));
-
-        return page.getContent().stream()
-                .map(this::convertToResponseDto)
-                .toList();
-    }
-
-    public UserResponseDto get(Long id) {
-        if (!repo.existsById(id)) {
-            throw new IllegalArgumentException("User not found with id: " + id);
-        }
-
-        return convertToResponseDto(repo.findById(id).get());
-    }
-
-    public UserResponseDto create(UserCreateDto userCreateDto) {
-        if (userCreateDto.getName() == null || userCreateDto.getEmail() == null || userCreateDto.getPassword() == null || userCreateDto.getPasswordConfirm() == null) {
-            throw new IllegalArgumentException("Name, email, password, and password confirmation must not be null");
-        }
-
-        if (!userCreateDto.getPassword().equals(userCreateDto.getPasswordConfirm())) {
-            throw new IllegalArgumentException("Password and password confirmation do not match");
-        }
-
-        User user = new User();
-        user.setName(userCreateDto.getName());
-        user.setEmail(userCreateDto.getEmail());
-        user.setPassword(userCreateDto.getPassword()); // In a real application, hash the password
-
-        return convertToResponseDto(repo.save(user));
-    }
-
-    public UserResponseDto update(Long id, UserPatchDto userPatchDto) {
-        if (!repo.existsById(id)) {
-            throw new IllegalArgumentException("User not found with id: " + id);
-        }
-
-        User existingUser = repo.findById(id).get();
-
-        if (userPatchDto.getName() != null) existingUser.setName(userPatchDto.getName());
-        if (userPatchDto.getEmail() != null) existingUser.setEmail(userPatchDto.getEmail());
-        if (userPatchDto.getPhoto() != null) existingUser.setPhoto(userPatchDto.getPhoto());
-
-        return convertToResponseDto(repo.save(existingUser));
-    }
-
-    public void delete(Long id) {
-        repo.deleteById(id);
-    }
-}

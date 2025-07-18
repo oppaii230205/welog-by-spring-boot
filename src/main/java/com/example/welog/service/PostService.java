@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.example.welog.dto.PostCreateDto;
 import com.example.welog.dto.PostPatchDto;
 import com.example.welog.dto.PostResponseDto;
+import com.example.welog.exception.ResourceNotFoundException;
 import com.example.welog.model.Post;
 import com.example.welog.repository.PostRepository;
 
@@ -46,7 +47,7 @@ public class PostService {
 
     public PostResponseDto getPost(Long id) {
         if (!repo.existsById(id)) {
-            throw new IllegalArgumentException("Post not found with id: " + id);
+            throw new ResourceNotFoundException("Post not found with id: " + id);
         }
 
         return convertToResponseDto(repo.findById(id).get());
@@ -66,7 +67,7 @@ public class PostService {
 
     public PostResponseDto updatePost(Long id, PostPatchDto postPatchDto) {
         Post post = repo.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Post not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Post not found with id: " + id));
 
         if (postPatchDto.getTitle() != null) {
             post.setTitle(postPatchDto.getTitle());
@@ -87,7 +88,7 @@ public class PostService {
 
     public void deletePost(Long id) {
         if (!repo.existsById(id)) {
-            throw new IllegalArgumentException("Post not found with id: " + id);
+            throw new ResourceNotFoundException("Post not found with id: " + id);
         }
         repo.deleteById(id);
     }
@@ -95,7 +96,7 @@ public class PostService {
     public PostResponseDto getPostBySlug(String slug) {
         return repo.findBySlug(slug)
                 .map(this::convertToResponseDto)
-                .orElseThrow(() -> new IllegalArgumentException("Post not found with slug: " + slug));
+                .orElseThrow(() -> new ResourceNotFoundException("Post not found with slug: " + slug));
     }
 }
 
