@@ -2,6 +2,7 @@ package com.example.welog.service;
 
 import com.example.welog.dto.UserCreateDto;
 import com.example.welog.dto.UserPatchDto;
+import com.example.welog.dto.UserResponseDto;
 
 // import com.example.welog.dto.UserCreateDto;
 // import com.example.welog.dto.UserResponseDto;
@@ -113,6 +114,11 @@ import com.example.welog.dto.UserPatchDto;
 
 import com.example.welog.model.User;
 import com.example.welog.repository.UserRepository;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -122,19 +128,36 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository repo;
 
+    private UserResponseDto convertToResponseDto(User user) {
+        return new UserResponseDto(
+                user.getId(),
+                user.getName(),
+                user.getEmail(),
+                user.getPhoto()
+        );
+    }
+
     public UserService(UserRepository repo) {
         this.repo = repo;
     }
 
-    public List<User> getAll() {
-        return repo.findAll();
+    public List<UserResponseDto> getAll(Pageable pageable) {
+        Page<User> page = repo.findAll(PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSortOr(Sort.by(Sort.Direction.ASC, "id"))));
+
+        return page.getContent().stream()
+                .map(this::convertToResponseDto)
+                .toList();
     }
 
-    public Optional<User> get(Long id) {
-        return repo.findById(id);
+    public UserResponseDto get(Long id) {
+        if (!repo.existsById(id)) {
+            throw new IllegalArgumentException("User not found with id: " + id);
+        }
+
+        return convertToResponseDto(repo.findById(id).get());
     }
 
-    public User create(UserCreateDto userCreateDto) {
+    public UserResponseDto create(UserCreateDto userCreateDto) {
         if (userCreateDto.getName() == null || userCreateDto.getEmail() == null || userCreateDto.getPassword() == null || userCreateDto.getPasswordConfirm() == null) {
             throw new IllegalArgumentException("Name, email, password, and password confirmation must not be null");
         }
@@ -147,10 +170,11 @@ public class UserService {
         user.setName(userCreateDto.getName());
         user.setEmail(userCreateDto.getEmail());
         user.setPassword(userCreateDto.getPassword()); // In a real application, hash the password
-        return repo.save(user);
+
+        return convertToResponseDto(repo.save(user));
     }
 
-    public User update(Long id, UserPatchDto userPatchDto) {
+    public UserResponseDto update(Long id, UserPatchDto userPatchDto) {
         if (!repo.existsById(id)) {
             throw new IllegalArgumentException("User not found with id: " + id);
         }
@@ -161,7 +185,7 @@ public class UserService {
         if (userPatchDto.getEmail() != null) existingUser.setEmail(userPatchDto.getEmail());
         if (userPatchDto.getPhoto() != null) existingUser.setPhoto(userPatchDto.getPhoto());
 
-        return repo.save(existingUser);
+        return convertToResponseDto(repo.save(existingUser));
     }
 
     public void delete(Long id) {

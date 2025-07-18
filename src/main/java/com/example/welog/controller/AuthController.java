@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.welog.dto.UserCreateDto;
+import com.example.welog.dto.UserResponseDto;
 import com.example.welog.model.User;
 import com.example.welog.service.UserService;
 
@@ -21,7 +22,7 @@ public class AuthController {
     @PostMapping("/api/v1/users/signup")
     public ResponseEntity<?> signUp(@RequestBody UserCreateDto userCreateDto) {
         try {
-            User createdUser = userService.create(userCreateDto);
+            UserResponseDto createdUser = userService.create(userCreateDto);
             return ResponseEntity.status(201).body(createdUser);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());

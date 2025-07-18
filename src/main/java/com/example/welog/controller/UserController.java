@@ -77,11 +77,13 @@ package com.example.welog.controller;
 
 import com.example.welog.model.User;
 import com.example.welog.service.UserService;
+
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.welog.dto.UserPatchDto;
-
+import com.example.welog.dto.UserResponseDto;
 
 import java.util.List;
 
@@ -95,15 +97,13 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
-        return ResponseEntity.ok(service.getAll());
+    public ResponseEntity<List<UserResponseDto>> getAllUsers(Pageable pageable) {
+        return ResponseEntity.ok(service.getAll(pageable));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUser(@PathVariable Long id) {
-        return service.get(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<UserResponseDto> getUser(@PathVariable Long id) {
+        return ResponseEntity.ok(service.get(id));
     }
 
     // @PostMapping
@@ -112,7 +112,7 @@ public class UserController {
     // }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody UserPatchDto userPatchDto) {
+    public ResponseEntity<UserResponseDto> updateUser(@PathVariable Long id, @RequestBody UserPatchDto userPatchDto) {
         return ResponseEntity.ok(service.update(id, userPatchDto));
     }
 

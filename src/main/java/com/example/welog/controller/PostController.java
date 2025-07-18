@@ -1,4 +1,4 @@
-// package com.example.welog.controller;
+package com.example.welog.controller;
 
 // import com.example.welog.dto.PostCreateDto;
 // import com.example.welog.dto.PostResponseDto;
