@@ -1,4 +1,103 @@
-// package com.example.welog.service;
+package com.example.welog.service;
+
+import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+
+import com.example.welog.dto.PostCreateDto;
+import com.example.welog.dto.PostPatchDto;
+import com.example.welog.dto.PostResponseDto;
+import com.example.welog.model.Post;
+import com.example.welog.repository.PostRepository;
+
+@Service
+public class PostService {
+    private final PostRepository repo;
+
+    private PostResponseDto convertToResponseDto(Post post) {
+        return new PostResponseDto(
+                post.getId(),
+                post.getSlug(),
+                post.getTitle(),
+                post.getContent(),
+                post.getExcerpt(),
+                post.getCoverImage(),
+                post.getAuthor(),
+                post.getCreatedAt()
+        );
+    }
+
+    public PostService(PostRepository repo) {
+        this.repo = repo;
+    }
+
+    public List<PostResponseDto> getAllPosts(Pageable pageable) {
+        Page<Post> page = repo.findAll(PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSortOr(Sort.by(Sort.Direction.ASC, "id"))));
+
+        return page.getContent()
+                .stream()
+                .map(this::convertToResponseDto)
+                .toList();
+    }
+
+    public PostResponseDto getPost(Long id) {
+        if (!repo.existsById(id)) {
+            throw new IllegalArgumentException("Post not found with id: " + id);
+        }
+
+        return convertToResponseDto(repo.findById(id).get());
+    }
+
+    public PostResponseDto createPost(PostCreateDto postCreateDto) {
+        Post post = new Post(
+                postCreateDto.getTitle(),
+                postCreateDto.getContent(),
+                postCreateDto.getCoverImage(),
+                postCreateDto.getAuthor()
+        );
+
+        Post savedPost = repo.save(post);
+        return convertToResponseDto(savedPost);
+    }
+
+    public PostResponseDto updatePost(Long id, PostPatchDto postPatchDto) {
+        Post post = repo.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Post not found with id: " + id));
+
+        if (postPatchDto.getTitle() != null) {
+            post.setTitle(postPatchDto.getTitle());
+        }
+        if (postPatchDto.getContent() != null) {
+            post.setContent(postPatchDto.getContent());
+        }
+        if (postPatchDto.getCoverImage() != null) {
+            post.setCoverImage(postPatchDto.getCoverImage());
+        }
+        if (postPatchDto.getAuthor() != null) {
+            post.setAuthor(postPatchDto.getAuthor());
+        }
+
+        Post updatedPost = repo.save(post);
+        return convertToResponseDto(updatedPost);
+    }
+
+    public void deletePost(Long id) {
+        if (!repo.existsById(id)) {
+            throw new IllegalArgumentException("Post not found with id: " + id);
+        }
+        repo.deleteById(id);
+    }
+
+    public PostResponseDto getPostBySlug(String slug) {
+        return repo.findBySlug(slug)
+                .map(this::convertToResponseDto)
+                .orElseThrow(() -> new IllegalArgumentException("Post not found with slug: " + slug));
+    }
+}
 
 // import com.example.welog.dto.PostCreateDto;
 // import com.example.welog.dto.PostResponseDto;

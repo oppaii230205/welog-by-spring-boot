@@ -1,4 +1,52 @@
-// package com.example.welog.dto;
+package com.example.welog.dto;
+
+public class PostCreateDto {
+    private String title;
+    private String content;
+    private String coverImage;
+    private Long author;
+
+    public PostCreateDto() {}
+
+    public PostCreateDto(String title, String content, String coverImage, Long author) {
+        this.title = title;
+        this.content = content;
+        this.coverImage = coverImage;
+        this.author = author;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getCoverImage() {
+        return coverImage;
+    }
+
+    public void setCoverImage(String coverImage) {
+        this.coverImage = coverImage;
+    }
+
+    public Long getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(Long author) {
+        this.author = author;
+    }
+}
 
 // import jakarta.validation.constraints.NotBlank;
 // import jakarta.validation.constraints.Size;

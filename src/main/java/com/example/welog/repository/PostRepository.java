@@ -1,4 +1,19 @@
-// package com.example.welog.repository;
+package com.example.welog.repository;
+
+import java.util.Optional;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import com.example.welog.model.Post;
+
+@Repository
+public interface PostRepository extends JpaRepository<Post, Long> {
+    // Define methods for querying posts, e.g., by slug, author, etc.
+    Optional<Post> findBySlug(String slug);
+
+    // Additional query methods can be defined here
+}
 
 // import com.example.welog.model.Post;
 // import com.example.welog.model.User;

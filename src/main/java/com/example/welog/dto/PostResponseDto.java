@@ -1,4 +1,94 @@
-// package com.example.welog.dto;
+package com.example.welog.dto;
+
+import java.time.LocalDateTime;
+
+public class PostResponseDto {
+    private Long id;
+    private String slug;
+    private String title;
+    private String content;
+    private String excerpt;
+    private String coverImage;
+    private Long author;
+    private LocalDateTime createdAt;
+
+    public PostResponseDto() {}
+
+    public PostResponseDto(Long id, String slug, String title, String content, String excerpt, String coverImage, Long author, LocalDateTime createdAt) {
+        this.id = id;
+        this.slug = slug;
+        this.title = title;
+        this.content = content;
+        this.excerpt = excerpt;
+        this.coverImage = coverImage;
+        this.author = author;
+        this.createdAt = createdAt;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getSlug() {
+        return slug;
+    }
+
+    public void setSlug(String slug) {
+        this.slug = slug;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getExcerpt() {
+        return excerpt;
+    }
+
+    public void setExcerpt(String excerpt) {
+        this.excerpt = excerpt;
+    }
+
+    public String getCoverImage() {
+        return coverImage;
+    }
+
+    public void setCoverImage(String coverImage) {
+        this.coverImage = coverImage;
+    }
+
+    public Long getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(Long author) {
+        this.author = author;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+}
 
 // import java.time.LocalDateTime;
 // import java.util.List;

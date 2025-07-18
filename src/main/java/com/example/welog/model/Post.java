@@ -1,4 +1,122 @@
-// package com.example.welog.model;
+package com.example.welog.model;
+
+import jakarta.persistence.*;
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name = "posts")
+public class Post {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false)
+    private String title;
+
+    @Column(name = "slug", unique = true)
+    private String slug;
+
+    @Column(columnDefinition = "TEXT")
+    private String content;
+
+    @Column(name = "excerpt")
+    private String excerpt;
+
+    @Column(name = "cover_image")
+    private String coverImage;
+
+    @Column(name = "author", nullable = false)
+    private Long author;
+
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    private String generateSlug(String title) {
+        if (title == null) return null;
+        return title.toLowerCase()
+                    .replaceAll("[^a-z0-9\\s]", "")
+                    .replaceAll("\\s+", "-")
+                    .trim();
+    }
+
+    public Post() {}
+
+    public Post(String title, String content, String coverImage, Long author) {
+        this.title = title;
+        this.content = content;
+        this.excerpt = content.length() > 200 ? content.substring(0, 200) + "..." : content;
+        this.coverImage = coverImage;
+        this.author = author;
+        this.slug = generateSlug(title);
+        this.createdAt = LocalDateTime.now();
+    }
+
+    // Getters and Setters
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+        this.slug = generateSlug(title);
+    }
+
+    public String getSlug() {
+        return slug;
+    }
+
+    public void setSlug(String slug) {
+        this.slug = slug;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getExcerpt() {
+        return excerpt;
+    }
+
+    public void setExcerpt(String excerpt) {
+        this.excerpt = excerpt;
+    }
+
+    public String getCoverImage() {
+        return coverImage;
+    }
+
+    public void setCoverImage(String coverImage) {
+        this.coverImage = coverImage;
+    }
+
+    public Long getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(Long author) {
+        this.author = author;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+}
 
 // import jakarta.persistence.*;
 // import java.time.LocalDateTime;

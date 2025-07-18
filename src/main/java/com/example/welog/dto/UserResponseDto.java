@@ -1,6 +1,5 @@
 package com.example.welog.dto;
 
-import java.time.LocalDateTime;
 
 public class UserResponseDto {
     private Long id;

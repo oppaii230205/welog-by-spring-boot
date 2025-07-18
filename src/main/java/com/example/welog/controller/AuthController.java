@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.welog.dto.UserCreateDto;
 import com.example.welog.dto.UserResponseDto;
-import com.example.welog.model.User;
 import com.example.welog.service.UserService;
 
 @RestController
