@@ -1,6 +1,8 @@
 package com.example.welog.service;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -11,15 +13,31 @@ import org.springframework.stereotype.Service;
 import com.example.welog.dto.PostCreateDto;
 import com.example.welog.dto.PostPatchDto;
 import com.example.welog.dto.PostResponseDto;
+import com.example.welog.dto.TagResponseDto;
+import com.example.welog.dto.UserResponseDto;
 import com.example.welog.exception.ResourceNotFoundException;
 import com.example.welog.model.Post;
+import com.example.welog.model.User;
 import com.example.welog.repository.PostRepository;
+import com.example.welog.repository.UserRepository;
 
 @Service
 public class PostService {
-    private final PostRepository repo;
+    private final PostRepository postRepository;
+    private final UserRepository userRepository;
 
     private PostResponseDto convertToResponseDto(Post post) {
+        Set<TagResponseDto> tagDtos = post.getTags().stream()
+                .map(tag -> new TagResponseDto(tag.getId(), tag.getName()))
+                .collect(Collectors.toSet());
+
+        UserResponseDto authorDto = new UserResponseDto(
+                post.getAuthor().getId(),
+                post.getAuthor().getName(),
+                post.getAuthor().getEmail(),
+                post.getAuthor().getPhoto()
+        );
+
         return new PostResponseDto(
                 post.getId(),
                 post.getSlug(),
@@ -27,17 +45,19 @@ public class PostService {
                 post.getContent(),
                 post.getExcerpt(),
                 post.getCoverImage(),
-                post.getAuthor(),
-                post.getCreatedAt()
+                authorDto,
+                post.getCreatedAt(),
+                tagDtos
         );
     }
 
-    public PostService(PostRepository repo) {
-        this.repo = repo;
+    public PostService(PostRepository postRepository, UserRepository userRepository) {
+        this.postRepository = postRepository;
+        this.userRepository = userRepository;
     }
 
     public List<PostResponseDto> getAllPosts(Pageable pageable) {
-        Page<Post> page = repo.findAll(PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSortOr(Sort.by(Sort.Direction.ASC, "id"))));
+        Page<Post> page = postRepository.findAll(PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSortOr(Sort.by(Sort.Direction.ASC, "id"))));
 
         return page.getContent()
                 .stream()
@@ -46,27 +66,30 @@ public class PostService {
     }
 
     public PostResponseDto getPost(Long id) {
-        if (!repo.existsById(id)) {
+        if (!postRepository.existsById(id)) {
             throw new ResourceNotFoundException("Post not found with id: " + id);
         }
 
-        return convertToResponseDto(repo.findById(id).get());
+        return convertToResponseDto(postRepository.findById(id).get());
     }
 
     public PostResponseDto createPost(PostCreateDto postCreateDto) {
+        User author = userRepository.findById(postCreateDto.getAuthorId())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + postCreateDto.getAuthorId()));
+
         Post post = new Post(
                 postCreateDto.getTitle(),
                 postCreateDto.getContent(),
                 postCreateDto.getCoverImage(),
-                postCreateDto.getAuthor()
+                author
         );
 
-        Post savedPost = repo.save(post);
+        Post savedPost = postRepository.save(post);
         return convertToResponseDto(savedPost);
     }
 
     public PostResponseDto updatePost(Long id, PostPatchDto postPatchDto) {
-        Post post = repo.findById(id)
+        Post post = postRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Post not found with id: " + id));
 
         if (postPatchDto.getTitle() != null) {
@@ -78,23 +101,26 @@ public class PostService {
         if (postPatchDto.getCoverImage() != null) {
             post.setCoverImage(postPatchDto.getCoverImage());
         }
-        if (postPatchDto.getAuthor() != null) {
-            post.setAuthor(postPatchDto.getAuthor());
+        if (postPatchDto.getAuthorId() != null) {
+            User author = userRepository.findById(postPatchDto.getAuthorId())
+                    .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + postPatchDto.getAuthorId()));
+
+            post.setAuthor(author);
         }
 
-        Post updatedPost = repo.save(post);
+        Post updatedPost = postRepository.save(post);
         return convertToResponseDto(updatedPost);
     }
 
     public void deletePost(Long id) {
-        if (!repo.existsById(id)) {
+        if (!postRepository.existsById(id)) {
             throw new ResourceNotFoundException("Post not found with id: " + id);
         }
-        repo.deleteById(id);
+        postRepository.deleteById(id);
     }
 
     public PostResponseDto getPostBySlug(String slug) {
-        return repo.findBySlug(slug)
+        return postRepository.findBySlug(slug)
                 .map(this::convertToResponseDto)
                 .orElseThrow(() -> new ResourceNotFoundException("Post not found with slug: " + slug));
     }

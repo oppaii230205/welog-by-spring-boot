@@ -4,15 +4,15 @@ public class PostPatchDto {
     private String title;
     private String content;
     private String coverImage;
-    private Long author;
+    private Long authorId;
 
     public PostPatchDto() {}
 
-    public PostPatchDto(String title, String content, String coverImage, Long author) {
+    public PostPatchDto(String title, String content, String coverImage, Long authorId) {
         this.title = title;
         this.content = content;
         this.coverImage = coverImage;
-        this.author = author;
+        this.authorId = authorId;
     }
 
     public String getTitle() {
@@ -39,11 +39,11 @@ public class PostPatchDto {
         this.coverImage = coverImage;
     }
 
-    public Long getAuthor() {
-        return author;
+    public Long getAuthorId() {
+        return authorId;
     }
 
-    public void setAuthor(Long author) {
-        this.author = author;
+    public void setAuthorId(Long authorId) {
+        this.authorId = authorId;
     }
 }

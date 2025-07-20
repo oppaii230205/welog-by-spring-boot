@@ -1,6 +1,7 @@
 package com.example.welog.dto;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 public class PostResponseDto {
     private Long id;
@@ -9,12 +10,13 @@ public class PostResponseDto {
     private String content;
     private String excerpt;
     private String coverImage;
-    private Long author;
+    private UserResponseDto author;
     private LocalDateTime createdAt;
+    private Set<TagResponseDto> tags;
 
     public PostResponseDto() {}
 
-    public PostResponseDto(Long id, String slug, String title, String content, String excerpt, String coverImage, Long author, LocalDateTime createdAt) {
+    public PostResponseDto(Long id, String slug, String title, String content, String excerpt, String coverImage, UserResponseDto author, LocalDateTime createdAt, Set<TagResponseDto> tags) {
         this.id = id;
         this.slug = slug;
         this.title = title;
@@ -23,6 +25,7 @@ public class PostResponseDto {
         this.coverImage = coverImage;
         this.author = author;
         this.createdAt = createdAt;
+        this.tags = tags;
     }
 
     public Long getId() {
@@ -73,11 +76,11 @@ public class PostResponseDto {
         this.coverImage = coverImage;
     }
 
-    public Long getAuthor() {
+    public UserResponseDto getAuthor() {
         return author;
     }
 
-    public void setAuthor(Long author) {
+    public void setAuthor(UserResponseDto author) {
         this.author = author;
     }
 
@@ -87,6 +90,14 @@ public class PostResponseDto {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Set<TagResponseDto> getTags() {
+        return tags;
+    }
+
+    public void setTags(Set<TagResponseDto> tags) {
+        this.tags = tags;
     }
 }
 

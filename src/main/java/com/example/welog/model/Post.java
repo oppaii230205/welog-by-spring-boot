@@ -2,6 +2,7 @@ package com.example.welog.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Entity
 @Table(name = "posts")
@@ -25,11 +26,20 @@ public class Post {
     @Column(name = "cover_image")
     private String coverImage;
 
-    @Column(name = "author", nullable = false)
-    private Long author;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "author_id", nullable = false)
+    private User author;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+
+    @ManyToMany
+    @JoinTable(
+        name = "posts_tags",
+        joinColumns = @JoinColumn(name = "post_id"),
+        inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
+    private Set<Tag> tags;
 
     private String generateSlug(String title) {
         if (title == null) return null;
@@ -41,13 +51,13 @@ public class Post {
 
     public Post() {}
 
-    public Post(String title, String content, String coverImage, Long author) {
+    public Post(String title, String content, String coverImage, User author) {
         this.title = title;
+        this.slug = generateSlug(title);
         this.content = content;
         this.excerpt = content.length() > 200 ? content.substring(0, 200) + "..." : content;
         this.coverImage = coverImage;
         this.author = author;
-        this.slug = generateSlug(title);
         this.createdAt = LocalDateTime.now();
     }
 
@@ -101,11 +111,11 @@ public class Post {
         this.coverImage = coverImage;
     }
 
-    public Long getAuthor() {
+    public User getAuthor() {
         return author;
     }
 
-    public void setAuthor(Long author) {
+    public void setAuthor(User author) {
         this.author = author;
     }
 
@@ -115,6 +125,14 @@ public class Post {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Set<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(Set<Tag> tags) {
+        this.tags = tags;
     }
 }
 
