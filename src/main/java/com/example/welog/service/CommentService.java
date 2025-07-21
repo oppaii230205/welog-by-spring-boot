@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import com.example.utils.ResponseDtoMapper;
+import com.example.welog.utils.ResponseDtoMapper;
 import com.example.welog.dto.CommentCreateDto;
 import com.example.welog.dto.CommentPatchDto;
 import com.example.welog.dto.CommentResponseDto;

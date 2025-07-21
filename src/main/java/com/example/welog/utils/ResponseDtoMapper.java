@@ -1,4 +1,4 @@
-package com.example.utils;
+package com.example.welog.utils;
 
 import java.util.Set;
 import java.util.stream.Collectors;
