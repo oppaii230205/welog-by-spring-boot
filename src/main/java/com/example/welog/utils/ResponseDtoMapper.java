@@ -28,6 +28,10 @@ public class ResponseDtoMapper {
 
         UserResponseDto authorDto = mapToUserResponseDto(post.getAuthor());
 
+        Set<CommentResponseDto> commentsDto = post.getComments().stream()
+                .map(ResponseDtoMapper::mapToCommentResponseDto)
+                .collect(Collectors.toSet());
+
         return new PostResponseDto(
                 post.getId(),
                 post.getSlug(),
@@ -37,18 +41,19 @@ public class ResponseDtoMapper {
                 post.getCoverImage(),
                 authorDto,
                 post.getCreatedAt(),
-                tagDtos
+                tagDtos,
+                commentsDto
         );
     }
 
     public static CommentResponseDto mapToCommentResponseDto(Comment comment) {
         UserResponseDto userDto = mapToUserResponseDto(comment.getUser());
-        PostResponseDto postDto = mapToPostResponseDto(comment.getPost());
+        // PostResponseDto postDto = mapToPostResponseDto(comment.getPost());
 
         return new CommentResponseDto(
                 comment.getId(),
                 comment.getContent(),
-                postDto,
+                // postDto,
                 userDto,
                 comment.getCreatedAt()
         );

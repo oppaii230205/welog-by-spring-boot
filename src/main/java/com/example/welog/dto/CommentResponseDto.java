@@ -5,16 +5,16 @@ import java.time.LocalDateTime;
 public class CommentResponseDto {
     private Long id;
     private String content;
-    private PostResponseDto post;
+    // private PostResponseDto post; // prevent infinite recursion
     private UserResponseDto user;
     private LocalDateTime createdAt;
 
     public CommentResponseDto() {}
 
-    public CommentResponseDto(Long id, String content, PostResponseDto post, UserResponseDto user, LocalDateTime createdAt) {
+    public CommentResponseDto(Long id, String content, UserResponseDto user, LocalDateTime createdAt) {
         this.id = id;
         this.content = content;
-        this.post = post;
+        // this.post = post;
         this.user = user;
         this.createdAt = createdAt;
     }
@@ -35,13 +35,13 @@ public class CommentResponseDto {
         this.content = content;
     }
 
-    public PostResponseDto getPost() {
-        return post;
-    }
+    // public PostResponseDto getPost() {
+    //     return post;
+    // }
 
-    public void setPost(PostResponseDto post) {
-        this.post = post;
-    }
+    // public void setPost(PostResponseDto post) {
+    //     this.post = post;
+    // }
 
     public UserResponseDto getUser() {
         return user;

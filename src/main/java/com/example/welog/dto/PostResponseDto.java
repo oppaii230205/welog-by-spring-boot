@@ -13,10 +13,11 @@ public class PostResponseDto {
     private UserResponseDto author;
     private LocalDateTime createdAt;
     private Set<TagResponseDto> tags;
+    private Set<CommentResponseDto> comments;
 
     public PostResponseDto() {}
 
-    public PostResponseDto(Long id, String slug, String title, String content, String excerpt, String coverImage, UserResponseDto author, LocalDateTime createdAt, Set<TagResponseDto> tags) {
+    public PostResponseDto(Long id, String slug, String title, String content, String excerpt, String coverImage, UserResponseDto author, LocalDateTime createdAt, Set<TagResponseDto> tags, Set<CommentResponseDto> comments) {
         this.id = id;
         this.slug = slug;
         this.title = title;
@@ -26,6 +27,7 @@ public class PostResponseDto {
         this.author = author;
         this.createdAt = createdAt;
         this.tags = tags;
+        this.comments = comments;
     }
 
     public Long getId() {
@@ -98,6 +100,14 @@ public class PostResponseDto {
 
     public void setTags(Set<TagResponseDto> tags) {
         this.tags = tags;
+    }
+
+    public Set<CommentResponseDto> getComments() {
+        return comments;
+    }
+
+    public void setComments(Set<CommentResponseDto> comments) {
+        this.comments = comments;
     }
 }
 

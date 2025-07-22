@@ -1,8 +1,6 @@
 package com.example.welog.service;
 
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -13,43 +11,17 @@ import org.springframework.stereotype.Service;
 import com.example.welog.dto.PostCreateDto;
 import com.example.welog.dto.PostPatchDto;
 import com.example.welog.dto.PostResponseDto;
-import com.example.welog.dto.TagResponseDto;
-import com.example.welog.dto.UserResponseDto;
 import com.example.welog.exception.ResourceNotFoundException;
 import com.example.welog.model.Post;
 import com.example.welog.model.User;
 import com.example.welog.repository.PostRepository;
 import com.example.welog.repository.UserRepository;
+import com.example.welog.utils.ResponseDtoMapper;
 
 @Service
 public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
-
-    private PostResponseDto convertToResponseDto(Post post) {
-        Set<TagResponseDto> tagDtos = post.getTags().stream()
-                .map(tag -> new TagResponseDto(tag.getId(), tag.getName()))
-                .collect(Collectors.toSet());
-
-        UserResponseDto authorDto = new UserResponseDto(
-                post.getAuthor().getId(),
-                post.getAuthor().getName(),
-                post.getAuthor().getEmail(),
-                post.getAuthor().getPhoto()
-        );
-
-        return new PostResponseDto(
-                post.getId(),
-                post.getSlug(),
-                post.getTitle(),
-                post.getContent(),
-                post.getExcerpt(),
-                post.getCoverImage(),
-                authorDto,
-                post.getCreatedAt(),
-                tagDtos
-        );
-    }
 
     public PostService(PostRepository postRepository, UserRepository userRepository) {
         this.postRepository = postRepository;
@@ -61,7 +33,7 @@ public class PostService {
 
         return page.getContent()
                 .stream()
-                .map(this::convertToResponseDto)
+                .map(ResponseDtoMapper::mapToPostResponseDto)
                 .toList();
     }
 
@@ -70,7 +42,7 @@ public class PostService {
             throw new ResourceNotFoundException("Post not found with id: " + id);
         }
 
-        return convertToResponseDto(postRepository.findById(id).get());
+        return ResponseDtoMapper.mapToPostResponseDto(postRepository.findById(id).get());
     }
 
     public PostResponseDto createPost(PostCreateDto postCreateDto) {
@@ -85,7 +57,7 @@ public class PostService {
         );
 
         Post savedPost = postRepository.save(post);
-        return convertToResponseDto(savedPost);
+        return ResponseDtoMapper.mapToPostResponseDto(savedPost);
     }
 
     public PostResponseDto updatePost(Long id, PostPatchDto postPatchDto) {
@@ -109,7 +81,7 @@ public class PostService {
         }
 
         Post updatedPost = postRepository.save(post);
-        return convertToResponseDto(updatedPost);
+        return ResponseDtoMapper.mapToPostResponseDto(updatedPost);
     }
 
     public void deletePost(Long id) {
@@ -121,7 +93,7 @@ public class PostService {
 
     public PostResponseDto getPostBySlug(String slug) {
         return postRepository.findBySlug(slug)
-                .map(this::convertToResponseDto)
+                .map(ResponseDtoMapper::mapToPostResponseDto)
                 .orElseThrow(() -> new ResourceNotFoundException("Post not found with slug: " + slug));
     }
 }

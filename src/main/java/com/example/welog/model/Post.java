@@ -41,6 +41,9 @@ public class Post {
     )
     private Set<Tag> tags;
 
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Comment> comments;
+
     private String generateSlug(String title) {
         if (title == null) return null;
         return title.toLowerCase()
@@ -133,6 +136,14 @@ public class Post {
 
     public void setTags(Set<Tag> tags) {
         this.tags = tags;
+    }
+
+    public Set<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(Set<Comment> comments) {
+        this.comments = comments;
     }
 }
 
