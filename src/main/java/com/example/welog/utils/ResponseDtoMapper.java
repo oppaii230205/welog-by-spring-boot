@@ -13,11 +13,16 @@ import com.example.welog.model.User;
 
 public class ResponseDtoMapper {
     public static UserResponseDto mapToUserResponseDto(User user) {
+        Set<String> roles = user.getRoles().stream()
+                .map(role -> role.getName().name())
+                .collect(Collectors.toSet());
+
         return new UserResponseDto(
                 user.getId(),
                 user.getName(),
                 user.getEmail(),
-                user.getPhoto()
+                user.getPhoto(),
+                roles
         );
     }
 

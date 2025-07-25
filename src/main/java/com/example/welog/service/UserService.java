@@ -6,6 +6,7 @@ import com.example.welog.dto.UserResponseDto;
 import com.example.welog.exception.ResourceNotFoundException;
 import com.example.welog.model.User;
 import com.example.welog.repository.UserRepository;
+import com.example.welog.utils.ResponseDtoMapper;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,35 +18,26 @@ import java.util.List;
 
 @Service
 public class UserService {
-    private final UserRepository repo;
+    private final UserRepository userRepository;
 
-    private UserResponseDto convertToResponseDto(User user) {
-        return new UserResponseDto(
-                user.getId(),
-                user.getName(),
-                user.getEmail(),
-                user.getPhoto()
-        );
-    }
-
-    public UserService(UserRepository repo) {
-        this.repo = repo;
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     public List<UserResponseDto> getAll(Pageable pageable) {
-        Page<User> page = repo.findAll(PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSortOr(Sort.by(Sort.Direction.ASC, "id"))));
+        Page<User> page = userRepository.findAll(PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSortOr(Sort.by(Sort.Direction.ASC, "id"))));
 
         return page.getContent().stream()
-                .map(this::convertToResponseDto)
+                .map(ResponseDtoMapper::mapToUserResponseDto)
                 .toList();
     }
 
     public UserResponseDto get(Long id) {
-        if (!repo.existsById(id)) {
+        if (!userRepository.existsById(id)) {
             throw new ResourceNotFoundException("User not found with id: " + id);
         }
 
-        return convertToResponseDto(repo.findById(id).get());
+        return ResponseDtoMapper.mapToUserResponseDto(userRepository.findById(id).get());
     }
 
     public UserResponseDto create(UserCreateDto userCreateDto) {
@@ -62,28 +54,37 @@ public class UserService {
         user.setEmail(userCreateDto.getEmail());
         user.setPassword(userCreateDto.getPassword()); // In a real application, hash the password
 
-        return convertToResponseDto(repo.save(user));
+        return ResponseDtoMapper.mapToUserResponseDto(userRepository.save(user));
     }
 
     public UserResponseDto update(Long id, UserPatchDto userPatchDto) {
-        if (!repo.existsById(id)) {
+        if (!userRepository.existsById(id)) {
             throw new ResourceNotFoundException("User not found with id: " + id);
         }
 
-        User existingUser = repo.findById(id).get();
+        User existingUser = userRepository.findById(id).get();
 
         if (userPatchDto.getName() != null) existingUser.setName(userPatchDto.getName());
         if (userPatchDto.getEmail() != null) existingUser.setEmail(userPatchDto.getEmail());
         if (userPatchDto.getPhoto() != null) existingUser.setPhoto(userPatchDto.getPhoto());
 
-        return convertToResponseDto(repo.save(existingUser));
+        return ResponseDtoMapper.mapToUserResponseDto(userRepository.save(existingUser));
     }
 
     public void delete(Long id) {
-        if (!repo.existsById(id)) {
+        if (!userRepository.existsById(id)) {
             throw new ResourceNotFoundException("User not found with id: " + id);
         }
-        repo.deleteById(id);
+        userRepository.deleteById(id);
+    }
+
+    // For security
+    public Boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
+    public void save(User user) {
+        userRepository.save(user);
     }
 }
 

@@ -28,6 +28,7 @@ public class PostController {
     }
 
     @GetMapping
+    // @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<List<PostResponseDto>> getAllPosts(Pageable pageable) {
         return ResponseEntity.ok(postService.getAllPosts(pageable));
     }

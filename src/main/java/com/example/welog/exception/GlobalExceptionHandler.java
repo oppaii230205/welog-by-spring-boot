@@ -60,22 +60,47 @@ public class GlobalExceptionHandler {
             LocalDateTime.now(),
             request.getDescription(false)
         );
+
         errorResponse.setValidationErrors(errors);
         
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
-    
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleGlobalException(
-            Exception ex, WebRequest request) {
-        
+
+    @ExceptionHandler(value = UserAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> UserAlreadyExistsExceptionHandler(UserAlreadyExistsException exception, WebRequest request) {
         ErrorResponse errorResponse = new ErrorResponse(
-            HttpStatus.INTERNAL_SERVER_ERROR.value(),
-            "Internal server error",
-            LocalDateTime.now(),
-            request.getDescription(false)
+                HttpStatus.CONFLICT.value(),
+                exception.getMessage(),
+                LocalDateTime.now(),
+                request.getDescription(false)
         );
-        
-        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
     }
+
+    @ExceptionHandler(value = RoleNotFoundException.class)
+    public ResponseEntity<ErrorResponse> RoleNotFoundExceptionHandler(RoleNotFoundException exception, WebRequest request) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                HttpStatus.NOT_FOUND.value(),
+                exception.getMessage(),
+                LocalDateTime.now(),
+                request.getDescription(false)
+        );
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+    
+    // @ExceptionHandler(Exception.class)
+    // public ResponseEntity<ErrorResponse> handleGlobalException(
+    //         Exception ex, WebRequest request) {
+        
+    //     ErrorResponse errorResponse = new ErrorResponse(
+    //         HttpStatus.INTERNAL_SERVER_ERROR.value(),
+    //         "Internal server error",
+    //         LocalDateTime.now(),
+    //         request.getDescription(false)
+    //     );
+        
+    //     return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    // }
 }
