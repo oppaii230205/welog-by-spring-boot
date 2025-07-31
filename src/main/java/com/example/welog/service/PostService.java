@@ -2,6 +2,7 @@ package com.example.welog.service;
 
 import java.util.List;
 
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -45,6 +46,7 @@ public class PostService {
         return ResponseDtoMapper.mapToPostResponseDto(postRepository.findById(id).get());
     }
 
+    @Transactional
     public PostResponseDto createPost(PostCreateDto postCreateDto) {
         User author = userRepository.findById(postCreateDto.getAuthorId())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + postCreateDto.getAuthorId()));

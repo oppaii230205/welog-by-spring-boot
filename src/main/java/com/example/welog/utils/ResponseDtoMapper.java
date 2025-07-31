@@ -1,5 +1,6 @@
 package com.example.welog.utils;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -27,15 +28,15 @@ public class ResponseDtoMapper {
     }
 
     public static PostResponseDto mapToPostResponseDto(Post post) {
-        Set<TagResponseDto> tagDtos = post.getTags().stream()
+        Set<TagResponseDto> tagDtos = post.getTags() != null ? post.getTags().stream()
                 .map(tag -> new TagResponseDto(tag.getId(), tag.getName()))
-                .collect(Collectors.toSet());
+                .collect(Collectors.toSet()) : new HashSet<>();
 
         UserResponseDto authorDto = mapToUserResponseDto(post.getAuthor());
 
-        Set<CommentResponseDto> commentsDto = post.getComments().stream()
+        Set<CommentResponseDto> commentsDto = post.getComments() != null ? post.getComments().stream()
                 .map(ResponseDtoMapper::mapToCommentResponseDto)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toSet()) : new HashSet<>();
 
         return new PostResponseDto(
                 post.getId(),
