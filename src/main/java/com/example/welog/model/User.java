@@ -1,6 +1,6 @@
 package com.example.welog.model;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -27,22 +27,22 @@ public class User {
     private String password;
 
     @Column(name = "password_changed_at")
-    private LocalDateTime passwordChangedAt;
+    private OffsetDateTime passwordChangedAt;
 
     @Column(name = "password_reset_token")
     private String passwordResetToken;
     
     @Column(name = "password_reset_expires")
-    private LocalDateTime passwordResetExpires;
+    private OffsetDateTime passwordResetExpires;
 
     @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    private OffsetDateTime createdAt;
 
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    private OffsetDateTime updatedAt;
 
     @Column(name = "deleted_at")
-    private LocalDateTime deletedAt;
+    private OffsetDateTime deletedAt;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "users_roles",

@@ -1,6 +1,6 @@
 package com.example.welog.model;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -32,13 +32,13 @@ public class Comment {
     private User user;
 
     @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private OffsetDateTime createdAt;
 
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    private OffsetDateTime updatedAt;
 
     @Column(name = "deleted_at")
-    private LocalDateTime deletedAt;
+    private OffsetDateTime deletedAt;
 
     public Comment(String content, Post post, User user) {
         this.content = content;
