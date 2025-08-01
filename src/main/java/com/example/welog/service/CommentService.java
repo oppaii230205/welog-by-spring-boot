@@ -85,7 +85,7 @@ public class CommentService {
         Comment comment = commentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Comment not found with id: " + id));
 
-        commentRepository.delete(comment);
+        commentRepository.softDelete(id);
     }
     
 }

@@ -90,7 +90,7 @@ public class PostService {
         if (!postRepository.existsById(id)) {
             throw new ResourceNotFoundException("Post not found with id: " + id);
         }
-        postRepository.deleteById(id);
+        postRepository.softDelete(id);
     }
 
     public PostResponseDto getPostBySlug(String slug) {

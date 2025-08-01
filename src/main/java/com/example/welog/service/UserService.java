@@ -75,7 +75,7 @@ public class UserService {
         if (!userRepository.existsById(id)) {
             throw new ResourceNotFoundException("User not found with id: " + id);
         }
-        userRepository.deleteById(id);
+        userRepository.softDelete(id);
     }
 
     // For security

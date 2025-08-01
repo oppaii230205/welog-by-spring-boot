@@ -60,8 +60,7 @@ public class AuthService {
         user.setEmail(userCreateDto.getEmail());
         user.setPhoto(userCreateDto.getPhoto() != null ? userCreateDto.getPhoto() : "default.png"); // Set a default photo
         user.setPassword(passwordEncoder.encode(userCreateDto.getPassword())); // Hash the password
-        user.setActive(true); // Set the user as active by default
-        
+
         Role defaultRole = roleRepository.findByName(ERole.ROLE_USER).orElseThrow(() -> 
             new RoleNotFoundException("Default role not found"));
 
