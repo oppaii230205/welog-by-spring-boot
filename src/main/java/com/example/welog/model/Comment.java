@@ -13,7 +13,7 @@ import org.hibernate.annotations.SQLRestriction;
 @NoArgsConstructor
 @Entity
 @Table(name = "comments")
-//@SQLRestriction("deleted_at IS NULL")
+@SQLRestriction("deleted_at IS NULL")
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -14,7 +14,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 @Table(name = "posts")
-//@SQLRestriction("deleted_at IS NULL")
+@SQLRestriction("deleted_at IS NULL")
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -103,9 +103,9 @@ public class PostService {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Post not found with id: " + id));
 
-        if (post.getDeletedAt() != null) {
-            throw new ResourceNotFoundException("Post not found with id: " + id);
-        }
+//        if (post.getDeletedAt() != null) {
+//            throw new ResourceNotFoundException("Post not found with id: " + id);
+//        }
 
         if (postPatchDto.getTitle() != null) {
             post.setTitle(postPatchDto.getTitle());
@@ -134,9 +134,9 @@ public class PostService {
 
         Post post = postRepository.findById(id).get();
 
-        if (post.getDeletedAt() != null) {
-            throw new ResourceNotFoundException("Post not found with id: " + id);
-        }
+//        if (post.getDeletedAt() != null) {
+//            throw new ResourceNotFoundException("Post not found with id: " + id);
+//        }
 
         postRepository.softDelete(id);
     }

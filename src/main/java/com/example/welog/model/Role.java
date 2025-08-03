@@ -9,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.*;
+import org.hibernate.annotations.SQLRestriction;
 
 @Getter
 @Setter
@@ -16,6 +17,7 @@ import lombok.*;
 @NoArgsConstructor
 @Entity
 @Table(name = "roles")
+@SQLRestriction("deleted_at IS NULL")
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

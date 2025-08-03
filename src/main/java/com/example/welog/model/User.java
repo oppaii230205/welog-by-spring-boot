@@ -14,7 +14,7 @@ import org.hibernate.annotations.SQLRestriction;
 @NoArgsConstructor
 @Entity
 @Table(name = "users") // thêm dòng này
-//@SQLRestriction("deleted_at IS NULL")
+@SQLRestriction("deleted_at IS NULL")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -5,6 +5,7 @@ import java.util.Set;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLRestriction;
 
 @Getter
 @Setter
@@ -12,6 +13,7 @@ import lombok.*;
 @NoArgsConstructor
 @Entity
 @Table(name = "tags")
+@SQLRestriction("deleted_at IS NULL")
 public class Tag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
