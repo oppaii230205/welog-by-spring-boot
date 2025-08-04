@@ -32,8 +32,6 @@ public class UserDetailsImpl implements UserDetails {
 
     private Collection<? extends GrantedAuthority> authorities;
 
-    private Boolean active;
-
     public static UserDetailsImpl build(User user) {
         List<GrantedAuthority> authorities = user.getRoles()
                 .stream()
@@ -44,8 +42,7 @@ public class UserDetailsImpl implements UserDetails {
                 user.getId(),
                 user.getEmail(),
                 user.getPassword(),
-                authorities,
-                user.getActive()
+                authorities
         );
     }
     

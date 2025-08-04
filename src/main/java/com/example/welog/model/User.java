@@ -1,19 +1,20 @@
 package com.example.welog.model;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.annotations.SQLRestriction;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "users") // thêm dòng này
+@SQLRestriction("deleted_at IS NULL")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,16 +26,22 @@ public class User {
     private String password;
 
     @Column(name = "password_changed_at")
-    private LocalDateTime passwordChangedAt;
+    private OffsetDateTime passwordChangedAt;
 
     @Column(name = "password_reset_token")
     private String passwordResetToken;
     
     @Column(name = "password_reset_expires")
-    private LocalDateTime passwordResetExpires;
-    
-    @Column(name = "active")
-    private Boolean active = true;
+    private OffsetDateTime passwordResetExpires;
+
+    @Column(name = "created_at")
+    private OffsetDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private OffsetDateTime updatedAt;
+
+    @Column(name = "deleted_at")
+    private OffsetDateTime deletedAt;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "users_roles",

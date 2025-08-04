@@ -31,18 +31,25 @@ public class CommentService {
 
     public List<CommentResponseDto> getAllComments() {
         return commentRepository.findAll().stream()
+//                .filter(comment -> comment.getDeletedAt() == null)
                 .map(ResponseDtoMapper::mapToCommentResponseDto)
                 .collect(Collectors.toList());
     }
 
     public List<CommentResponseDto> getCommentsByPostId(Long postId) {
         return commentRepository.findByPostId(postId).stream()
+//                .filter(comment -> comment.getDeletedAt() == null)
                 .map(ResponseDtoMapper::mapToCommentResponseDto)
                 .collect(Collectors.toList());
     }
 
     public CommentResponseDto getComment(Long id) {
         Comment comment = commentRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Comment not found with id: " + id));
+
+//        if (comment.getDeletedAt() != null) {
+//            throw new ResourceNotFoundException("Comment not found with id: " + id);
+//        }
+
         return ResponseDtoMapper.mapToCommentResponseDto(comment);
     }
 
@@ -61,6 +68,10 @@ public class CommentService {
     public CommentResponseDto updateComment(Long id, CommentPatchDto commentPatchDto) {
         Comment comment = commentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Comment not found with id: " + id));
+
+//        if (comment.getDeletedAt() != null) {
+//            throw new ResourceNotFoundException("Comment not found with id: " + id);
+//        }
 
         if (commentPatchDto.getContent() != null) {
             comment.setContent(commentPatchDto.getContent());
@@ -85,7 +96,11 @@ public class CommentService {
         Comment comment = commentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Comment not found with id: " + id));
 
-        commentRepository.delete(comment);
+//        if (comment.getDeletedAt() != null) {
+//            throw new ResourceNotFoundException("Comment not found with id: " + id);
+//        }
+
+        commentRepository.softDelete(id);
     }
     
 }

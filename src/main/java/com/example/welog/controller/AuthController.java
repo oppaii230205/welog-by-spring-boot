@@ -15,7 +15,6 @@ import jakarta.validation.Valid;
 
 @RestController
 public class AuthController {
-
     private final AuthService authService;
 
     public AuthController(AuthService authService) {
