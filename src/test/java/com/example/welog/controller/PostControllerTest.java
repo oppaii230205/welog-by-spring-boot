@@ -7,7 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.catalina.connector.Response;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +18,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.security.test.context.support.WithMockUser;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -194,7 +191,7 @@ public class PostControllerTest {
   }
 
   @Test
-  void updatePost_WithValidData_ShouldReturnUpdatedPost() throws Exception {
+  void updatePost_ValidData_ReturnsUpdatedPost() throws Exception {
     // Arrange
     postResponseDto.setTitle("Updated Test Post");
     when(postService.updatePost(eq(1L), any())).thenReturn(postResponseDto);
@@ -210,7 +207,7 @@ public class PostControllerTest {
   }
 
   @Test
-  void deletePost_WhenExists_ShouldReturnNoContent() throws Exception {
+  void deletePost_Exists_ReturnsNoContent() throws Exception {
     // Arrange
     doNothing().when(postService).deletePost(1L);
 
@@ -223,7 +220,7 @@ public class PostControllerTest {
   }
 
   @Test
-  void deletePost_WhenNotExists_ShouldReturnNotFound() throws Exception {
+  void deletePost_NotExists_ReturnsNotFound() throws Exception {
     // Arrange
     doThrow(new ResourceNotFoundException("Post not found with id: 999"))
             .when(postService).deletePost(999L);
