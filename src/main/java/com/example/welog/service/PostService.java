@@ -2,6 +2,7 @@ package com.example.welog.service;
 
 import java.util.List;
 
+import com.example.welog.service.impl.UserDetailsImpl;
 import jakarta.transaction.Transactional;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
@@ -10,6 +11,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.example.welog.dto.PostCreateDto;
@@ -31,6 +37,19 @@ public class PostService {
     public PostService(PostRepository postRepository, UserRepository userRepository) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
+    }
+
+    public UserDetailsImpl getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new AuthenticationCredentialsNotFoundException("User is not authenticated");
+        }
+
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        return userDetails;
+
     }
 
     public List<PostResponseDto> getAllPosts(Pageable pageable) {
@@ -85,8 +104,9 @@ public class PostService {
 
     @Transactional
     public PostResponseDto createPost(PostCreateDto postCreateDto) {
-        User author = userRepository.findById(postCreateDto.getAuthorId())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + postCreateDto.getAuthorId()));
+        UserDetailsImpl userDetails = getCurrentUser();
+
+        User author = userRepository.findById(userDetails.getId()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         Post post = new Post(
                 postCreateDto.getTitle(),
