@@ -3,6 +3,9 @@ package com.example.welog.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.example.welog.service.impl.UserDetailsImpl;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.example.welog.utils.ResponseDtoMapper;
@@ -22,11 +25,13 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final AuthService authService;
 
-    public CommentService(CommentRepository commentRepository, PostRepository postRepository, UserRepository userRepository) {
+    public CommentService(CommentRepository commentRepository, PostRepository postRepository, UserRepository userRepository,  AuthService authService) {
         this.commentRepository = commentRepository;
         this.postRepository = postRepository;
         this.userRepository = userRepository;
+        this.authService = authService;
     }
 
     public List<CommentResponseDto> getAllComments() {
@@ -56,9 +61,10 @@ public class CommentService {
     public CommentResponseDto createComment(CommentCreateDto commentCreateDto) {
         Post post = postRepository.findById(commentCreateDto.getPostId())
                 .orElseThrow(() -> new ResourceNotFoundException("Post not found with id: " + commentCreateDto.getPostId()));
-        
-        User user = userRepository.findById(commentCreateDto.getUserId())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + commentCreateDto.getUserId()));
+
+        UserDetailsImpl userDetails = authService.getCurrentUser();
+
+        User user = userRepository.findById(userDetails.getId()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         Comment comment = new Comment(commentCreateDto.getContent(), post, user);
 
