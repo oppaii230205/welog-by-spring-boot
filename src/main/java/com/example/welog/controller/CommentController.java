@@ -2,6 +2,7 @@ package com.example.welog.controller;
 
 import java.util.List;
 
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -50,27 +51,27 @@ public class CommentController {
     }
 
     @PostMapping("/comments")
-    public ResponseEntity<CommentResponseDto> createComment(@RequestBody CommentCreateDto commentCreateDto) {
-        // TODO: Get current user from security context
-        Long userId = 1L; // Placeholder for current user ID, replace with actual
-        if (commentCreateDto.getUserId() == null) {
-            commentCreateDto.setUserId(userId);
-        }
+    public ResponseEntity<CommentResponseDto> createComment(@Valid @RequestBody CommentCreateDto commentCreateDto) {
+        // FINISH: Get current user from security context (in service layer)
+//        Long userId = 1L; // Placeholder for current user ID, replace with actual
+//        if (commentCreateDto.getUserId() == null) {
+//            commentCreateDto.setUserId(userId);
+//        }
 
         CommentResponseDto createdComment = commentService.createComment(commentCreateDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdComment);
     }
 
     @PostMapping("/posts/{postId}/comments")
-    public ResponseEntity<CommentResponseDto> createComment(@PathVariable Long postId, @RequestBody CommentCreateDto commentCreateDto) {
-        // TODO: Get current user from security context
-        Long userId = 1L; // Placeholder for current user ID, replace with actual
-        if (commentCreateDto.getUserId() == null) {
-            commentCreateDto.setUserId(userId);
-        }
+    public ResponseEntity<CommentResponseDto> createComment(@PathVariable Long postId, @Valid @RequestBody CommentCreateDto commentCreateDto) {
+        // FINISH: Get current user from security context
+//        Long userId = 1L; // Placeholder for current user ID, replace with actual
+//        if (commentCreateDto.getUserId() == null) {
+//            commentCreateDto.setUserId(userId);
+//        }
 
         commentCreateDto.setPostId(postId);
-        commentCreateDto.setUserId(userId);
+
         CommentResponseDto createdComment = commentService.createComment(commentCreateDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdComment);
     }

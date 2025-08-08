@@ -33,23 +33,12 @@ public class PostService {
     private static final Logger logger = LoggerFactory.getLogger(PostService.class);
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final AuthService authService;
 
-    public PostService(PostRepository postRepository, UserRepository userRepository) {
+    public PostService(PostRepository postRepository, UserRepository userRepository, AuthService authService) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
-    }
-
-    public UserDetailsImpl getCurrentUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new AuthenticationCredentialsNotFoundException("User is not authenticated");
-        }
-
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-
-        return userDetails;
-
+        this.authService = authService;
     }
 
     public List<PostResponseDto> getAllPosts(Pageable pageable) {
@@ -104,7 +93,7 @@ public class PostService {
 
     @Transactional
     public PostResponseDto createPost(PostCreateDto postCreateDto) {
-        UserDetailsImpl userDetails = getCurrentUser();
+        UserDetailsImpl userDetails = authService.getCurrentUser();
 
         User author = userRepository.findById(userDetails.getId()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
 

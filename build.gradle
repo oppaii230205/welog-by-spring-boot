@@ -36,10 +36,31 @@ dependencies {
 	runtimeOnly 'org.postgresql:postgresql'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+	// Integration testing
+	testImplementation 'org.springframework.security:spring-security-test'
+	testImplementation 'org.testcontainers:postgresql:1.19.7'
+	testImplementation 'org.testcontainers:junit-jupiter:1.19.7'
+	implementation 'com.h2database:h2'
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+// This section causes useful test output to go to the terminal.
+test {
+	testLogging {
+		events "passed", "skipped", "failed" //, "standardOut", "standardError"
+
+		showExceptions true
+		exceptionFormat "full"
+		showCauses true
+		showStackTraces true
+
+		// Change to `true` for more verbose test output
+		showStandardStreams = false
+	}
 }
 
 bootRun {
