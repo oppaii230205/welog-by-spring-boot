@@ -1,5 +1,6 @@
 package com.example.welog.model;
 
+import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,6 +22,17 @@ public class Tag {
 
     @Column(nullable = false, unique = true)
     private String name;
+
+    @Column(name = "created_at")
+    private OffsetDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private OffsetDateTime updatedAt;
+
+    @Column(name = "deleted_at")
+    private OffsetDateTime deletedAt;
+
+
 
     @ManyToMany(mappedBy = "tags")
     Set<Post> posts = new HashSet<>();

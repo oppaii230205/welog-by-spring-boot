@@ -11,6 +11,8 @@ import jakarta.persistence.Table;
 import lombok.*;
 import org.hibernate.annotations.SQLRestriction;
 
+import java.time.OffsetDateTime;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -26,6 +28,15 @@ public class Role {
     @Enumerated(EnumType.STRING)
     @Column(length = 20)
     private ERole name;
+
+    @Column(name = "created_at")
+    private OffsetDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private OffsetDateTime updatedAt;
+
+    @Column(name = "deleted_at")
+    private OffsetDateTime deletedAt;
 
     public Role(ERole name) {
         this.name = name;
