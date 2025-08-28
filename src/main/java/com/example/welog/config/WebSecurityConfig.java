@@ -3,6 +3,7 @@ package com.example.welog.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -59,7 +60,8 @@ public class WebSecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth ->
                         auth.requestMatchers("/api/v1/auth/**").permitAll()
-                                .anyRequest().authenticated()
+                            .requestMatchers(HttpMethod.GET, "/api/v1/posts/**").permitAll()
+                            .anyRequest().authenticated()
                 );
 
         http.authenticationProvider(authenticationProvider());
