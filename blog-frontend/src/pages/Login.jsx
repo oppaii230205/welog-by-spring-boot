@@ -29,7 +29,7 @@ const Login = () => {
 
       setTimeout(() => {
         login(userData, token);
-        navigate("/dashboard");
+        navigate("/");
       }, 2000);
     } catch (err) {
       setError(err.response?.data?.message || "Login failed");

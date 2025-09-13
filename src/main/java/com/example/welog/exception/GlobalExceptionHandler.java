@@ -101,17 +101,17 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
     
-    // @ExceptionHandler(Exception.class)
-    // public ResponseEntity<ErrorResponse> handleGlobalException(
-    //         Exception ex, WebRequest request) {
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleGlobalException(
+            Exception ex, WebRequest request) {
         
-    //     ErrorResponse errorResponse = new ErrorResponse(
-    //         HttpStatus.INTERNAL_SERVER_ERROR.value(),
-    //         "Internal server error",
-    //         LocalDateTime.now(),
-    //         request.getDescription(false)
-    //     );
+        ErrorResponse errorResponse = new ErrorResponse(
+            HttpStatus.INTERNAL_SERVER_ERROR.value(),
+            "Internal server error",
+            LocalDateTime.now(),
+            request.getDescription(false)
+        );
         
-    //     return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
-    // }
+        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }

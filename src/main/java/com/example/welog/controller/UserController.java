@@ -18,6 +18,7 @@ import com.example.welog.service.UserService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.welog.dto.UserPatchDto;
 import com.example.welog.dto.UserResponseDto;
@@ -57,6 +58,13 @@ public class UserController {
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/updateMe")
+    public ResponseEntity<UserResponseDto> updateMe(@RequestParam(value = "photo", required = false) MultipartFile photo,
+                                                    @RequestParam(value = "name", required = false) String name,
+                                                    @RequestParam(value = "email", required = false) String email) {
+        return ResponseEntity.ok(service.updateMe(photo, name, email));
     }
 }
 

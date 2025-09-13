@@ -6,6 +6,8 @@ import Footer from "./components/common/Footer";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import PostDetailPage from "./pages/PostDetailPage";
+import Profile from "./pages/Profile";
 // import Posts from "./pages/Posts";
 import "./index.css";
 
@@ -20,7 +22,9 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/profile" element={<Profile />} />
               {/* <Route path="/posts" element={<Posts />} /> */}
+              <Route path="/posts/:id" element={<PostDetailPage />} />
             </Routes>
           </main>
           <Footer />

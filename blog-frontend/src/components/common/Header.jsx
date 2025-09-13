@@ -2,6 +2,7 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { LogOut, User, Plus } from "lucide-react";
+import API_URL from "../../config";
 
 const Header = () => {
   const { user, logout, isAuthenticated } = useAuth();
@@ -38,8 +39,13 @@ const Header = () => {
                   to="/profile"
                   className="flex items-center text-gray-600 hover:text-gray-900"
                 >
-                  <User size={18} className="mr-1" />
-                  {user?.name}
+                  {/* {console.log(user)} */}
+                  <img
+                    src={`${API_URL}/img/users/${user?.photo}`}
+                    alt={user?.name}
+                    className="w-8 h-8 rounded-full mr-1"
+                  />
+                  {user.name}
                 </Link>
                 <button
                   onClick={handleLogout}

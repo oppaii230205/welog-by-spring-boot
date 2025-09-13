@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 
+import { userService } from "../services/userService";
+
 const AuthContext = createContext();
 
 export const useAuth = () => {
@@ -24,10 +26,20 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   }, []);
 
-  const login = (userData, token) => {
+  const login = async (userData, token) => {
     localStorage.setItem("token", token);
+
+    const response = await userService.getUserById(userData.id);
+    userData = response.data;
+
     localStorage.setItem("user", JSON.stringify(userData));
     setUser(userData);
+  };
+
+  const updateUser = (userData) => {
+    const updatedUser = { ...user, ...userData };
+    localStorage.setItem("user", JSON.stringify(updatedUser));
+    setUser(updatedUser);
   };
 
   const logout = () => {
@@ -40,6 +52,7 @@ export const AuthProvider = ({ children }) => {
     user,
     login,
     logout,
+    updateUser,
     loading,
     isAuthenticated: !!user,
   };

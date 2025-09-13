@@ -27,6 +27,7 @@ public class ResponseDtoMapper {
                 user.getName(),
                 user.getEmail(),
                 user.getPhoto(),
+                user.getCreatedAt(),
                 roles
         );
     }
