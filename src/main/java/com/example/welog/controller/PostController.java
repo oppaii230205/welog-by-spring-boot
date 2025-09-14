@@ -2,19 +2,11 @@ package com.example.welog.controller;
 
 import java.util.List;
 
-import com.example.welog.service.impl.UserDetailsImpl;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.welog.dto.PostCreateDto;
 import com.example.welog.dto.PostPatchDto;
@@ -51,6 +43,12 @@ public class PostController {
     public ResponseEntity<PostResponseDto> createPost(@Valid @RequestBody PostCreateDto postCreateDto) {
         PostResponseDto createdPost = postService.createPost(postCreateDto);
         return ResponseEntity.status(201).body(createdPost);
+    }
+
+    @PostMapping("/{id}/coverImage")
+    public ResponseEntity<String> uploadCoverImage(@PathVariable Long id, @RequestParam("coverImage") MultipartFile coverImage) {
+        postService.uploadCoverImage(id, coverImage);
+        return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/{id}")

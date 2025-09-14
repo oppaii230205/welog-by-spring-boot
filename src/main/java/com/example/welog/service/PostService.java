@@ -1,5 +1,10 @@
 package com.example.welog.service;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 import com.example.welog.service.impl.UserDetailsImpl;
@@ -7,6 +12,7 @@ import jakarta.transaction.Transactional;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +23,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.welog.dto.PostCreateDto;
 import com.example.welog.dto.PostPatchDto;
@@ -34,6 +41,9 @@ public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final AuthService authService;
+
+    @Value("${app.upload.dir}")
+    private String uploadDir;
 
     public PostService(PostRepository postRepository, UserRepository userRepository, AuthService authService) {
         this.postRepository = postRepository;
@@ -103,6 +113,11 @@ public class PostService {
                 postCreateDto.getCoverImage(),
                 author
         );
+        
+        // Set custom excerpt if provided
+        if (postCreateDto.getExcerpt() != null && !postCreateDto.getExcerpt().trim().isEmpty()) {
+            post.setExcerpt(postCreateDto.getExcerpt());
+        }
 
         Post savedPost = postRepository.save(post);
         return ResponseDtoMapper.mapToPostResponseDto(savedPost);
@@ -134,6 +149,47 @@ public class PostService {
 
         Post updatedPost = postRepository.save(post);
         return ResponseDtoMapper.mapToPostResponseDto(updatedPost);
+    }
+
+    @Transactional
+    public void uploadCoverImage(Long id, MultipartFile coverImage) {
+        if (!postRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Post not found with id: " + id);
+        }
+
+        Post post = postRepository.findById(id).get();
+
+        // ensure upload dir exists
+        Path uploadPath = Paths.get(uploadDir).resolve("posts");
+        if (!Files.exists(uploadPath)) {
+            try {
+                Files.createDirectories(uploadPath);
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to create upload directory", e);
+            }
+        }
+
+        // Handle image upload logic here
+        if (coverImage != null && !coverImage.isEmpty()) {
+            String originalFilename = coverImage.getOriginalFilename();
+            String fileExtension = "";
+
+            if (originalFilename != null && originalFilename.contains(".")) {
+                fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
+            }
+
+            String newFilename = "post_" + post.getId() + "_" + System.currentTimeMillis() + fileExtension;
+            Path filePath = uploadPath.resolve(newFilename);
+
+            try {
+                Files.copy(coverImage.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+                post.setCoverImage(newFilename);
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to store file " + newFilename, e);
+            }
+        }
+
+        postRepository.save(post);
     }
 
     public void deletePost(Long id) {
