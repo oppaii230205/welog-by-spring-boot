@@ -30,10 +30,10 @@ public class Comment {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @Column(name = "created_at", insertable = false, nullable = false, updatable = false)
     private OffsetDateTime createdAt;
 
-    @Column(name = "updated_at")
+    @Column(name = "updated_at", insertable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private OffsetDateTime updatedAt;
 
     @Column(name = "deleted_at")

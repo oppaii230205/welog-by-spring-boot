@@ -34,10 +34,10 @@ public class User {
     @Column(name = "password_reset_expires")
     private OffsetDateTime passwordResetExpires;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", insertable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private OffsetDateTime createdAt;
 
-    @Column(name = "updated_at")
+    @Column(name = "updated_at", insertable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private OffsetDateTime updatedAt;
 
     @Column(name = "deleted_at")
