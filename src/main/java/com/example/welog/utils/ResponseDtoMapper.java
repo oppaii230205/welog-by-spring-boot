@@ -70,11 +70,16 @@ public class ResponseDtoMapper {
         UserResponseDto userDto = mapToUserResponseDto(comment.getUser());
         // PostResponseDto postDto = mapToPostResponseDto(comment.getPost());
 
+        Set<CommentResponseDto> repliesDto = comment.getReplies() != null ? comment.getReplies().stream()
+                .map(ResponseDtoMapper::mapToCommentResponseDto)
+                .collect(Collectors.toSet()) : new HashSet<>();
+
         return new CommentResponseDto(
                 comment.getId(),
                 comment.getContent(),
                 // postDto,
                 userDto,
+                repliesDto,
                 comment.getCreatedAt()
         );
     }

@@ -66,7 +66,21 @@ public class CommentService {
 
         User user = userRepository.findById(userDetails.getId()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        Comment comment = new Comment(commentCreateDto.getContent(), post, user);
+        Integer level = 1;
+        Comment parent = null;
+
+        if (commentCreateDto.getParentId() != null) {
+            parent = commentRepository.findById(commentCreateDto.getParentId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Parent comment not found with id: " + commentCreateDto.getParentId()));
+
+            if (parent.getLevel() >= 3) {
+                throw new RuntimeException("Maximum reply depth reached");
+            }
+
+            level = parent.getLevel() + 1;
+        }
+
+        Comment comment = new Comment(commentCreateDto.getContent(), post, user, parent, level);
 
         return ResponseDtoMapper.mapToCommentResponseDto(commentRepository.save(comment));
     }
