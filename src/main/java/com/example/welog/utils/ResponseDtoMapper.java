@@ -79,6 +79,7 @@ public class ResponseDtoMapper {
                 comment.getContent(),
                 // postDto,
                 userDto,
+                comment.getLevel(),
                 repliesDto,
                 comment.getCreatedAt()
         );

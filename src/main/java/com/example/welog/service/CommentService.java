@@ -48,6 +48,12 @@ public class CommentService {
                 .collect(Collectors.toList());
     }
 
+    public List<CommentResponseDto> getRootCommentsByPostId(Long postId) {
+        return commentRepository.findRootCommentsByPostId(postId).stream()
+                .map(ResponseDtoMapper::mapToCommentResponseDto)
+                .collect(Collectors.toList());
+    }
+
     public CommentResponseDto getComment(Long id) {
         Comment comment = commentRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Comment not found with id: " + id));
 
