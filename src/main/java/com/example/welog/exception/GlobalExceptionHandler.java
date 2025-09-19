@@ -107,7 +107,7 @@ public class GlobalExceptionHandler {
         
         ErrorResponse errorResponse = new ErrorResponse(
             HttpStatus.INTERNAL_SERVER_ERROR.value(),
-            "Internal server error",
+            ex.getMessage() != null ? ex.getMessage() : "Internal server error",
             LocalDateTime.now(),
             request.getDescription(false)
         );

@@ -5,10 +5,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.example.welog.dto.CommentResponseDto;
+import com.example.welog.dto.NotificationResponseDto;
 import com.example.welog.dto.PostResponseDto;
 import com.example.welog.dto.TagResponseDto;
 import com.example.welog.dto.UserResponseDto;
 import com.example.welog.model.Comment;
+import com.example.welog.model.Notification;
 import com.example.welog.model.Post;
 import com.example.welog.model.User;
 import org.slf4j.Logger;
@@ -82,6 +84,23 @@ public class ResponseDtoMapper {
                 comment.getLevel(),
                 repliesDto,
                 comment.getCreatedAt()
+        );
+    }
+
+    public static NotificationResponseDto mapToNotificationResponseDto(Notification notification) {
+        UserResponseDto recipientDto = mapToUserResponseDto(notification.getRecipient());
+        UserResponseDto senderDto = mapToUserResponseDto(notification.getSender());
+        PostResponseDto postDto = mapToPostResponseDto(notification.getPost());
+
+        return new NotificationResponseDto(
+                notification.getId(),
+                recipientDto,
+                senderDto,
+                postDto,
+                notification.getType(),
+                notification.getMessage(),
+                notification.isRead(),
+                notification.getCreatedAt()
         );
     }
 }

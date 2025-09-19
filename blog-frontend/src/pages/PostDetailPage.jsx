@@ -4,6 +4,7 @@ import { postService } from "../services/postService";
 import { commentService } from "../services/commentService";
 import LoadingSpinner from "../components/common/LoadingSpinner";
 import CommentSection from "../components/comments/CommentSection";
+import LikeButton from "../components/common/LikeButton";
 import { useAuth } from "../context/AuthContext";
 import {
   ArrowLeft,
@@ -320,6 +321,42 @@ const PostDetailPage = () => {
                 </div>
               </div>
             )}
+          </div>
+
+          {/* Action Bar */}
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-8">
+            <div className="p-6 md:p-8">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-4">
+                  <LikeButton
+                    postId={post.id}
+                    initialLikeCount={post.likeCount || 0}
+                  />
+
+                  <button className="flex items-center space-x-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 px-3 py-2 rounded-lg transition-all duration-200">
+                    <Share2 size={18} />
+                    <span className="text-sm font-medium">Share</span>
+                  </button>
+
+                  <button className="flex items-center space-x-2 text-gray-600 hover:text-green-600 hover:bg-green-50 px-3 py-2 rounded-lg transition-all duration-200">
+                    <BookmarkPlus size={18} />
+                    <span className="text-sm font-medium">Save</span>
+                  </button>
+                </div>
+
+                <div className="flex items-center space-x-4 text-gray-500 text-sm">
+                  <div className="flex items-center">
+                    <Eye size={16} className="mr-1" />
+                    <span>2.1k views</span>
+                  </div>
+
+                  <div className="flex items-center">
+                    <Clock size={16} className="mr-1" />
+                    <span>{formatReadTime(post.content)}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Comments Section */}
