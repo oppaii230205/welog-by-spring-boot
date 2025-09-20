@@ -10,6 +10,7 @@ import {
   BookOpen,
 } from "lucide-react";
 import NotificationDropdown from "./NotificationDropdown";
+import SearchBar from "./SearchBar";
 import API_URL from "../../config";
 
 const Header = () => {
@@ -39,39 +40,54 @@ const Header = () => {
   return (
     <header className="bg-white/95 backdrop-blur-sm shadow-sm border-b border-gray-200 sticky top-0 z-40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <Link
-            to="/"
-            className="flex items-center text-2xl font-bold bg-gradient-to-r from-primary-600 to-blue-600 bg-clip-text text-transparent hover:from-primary-700 hover:to-blue-700 transition-all duration-200"
-          >
-            <BookOpen size={28} className="mr-2 text-primary-600" />
-            Welog
-          </Link>
-
-          {/* Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
+        <div className="flex items-center justify-between h-16">
+          {/* Left: Logo */}
+          <div className="flex-shrink-0">
             <Link
-              to="/posts"
-              className="text-gray-700 hover:text-primary-600 font-medium transition-colors duration-200 relative group"
+              to="/"
+              className="flex items-center text-2xl font-bold bg-gradient-to-r from-primary-600 to-blue-600 bg-clip-text text-transparent hover:from-primary-700 hover:to-blue-700 transition-all duration-200"
             >
-              Posts
-              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary-600 group-hover:w-full transition-all duration-200"></span>
+              <BookOpen size={28} className="mr-2 text-primary-600" />
+              Welog
             </Link>
+          </div>
 
-            {isAuthenticated && (
+          {/* Center: Navigation & Search */}
+          <div className="hidden lg:flex items-center space-x-8 flex-1 justify-center max-w-2xl">
+            {/* Navigation */}
+            <nav className="flex items-center space-x-6">
               <Link
-                to="/create-post"
-                className="flex items-center bg-gradient-to-r from-primary-600 to-blue-600 hover:from-primary-700 hover:to-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 shadow-sm hover:shadow-md transform hover:-translate-y-0.5"
+                to="/posts"
+                className="text-gray-700 hover:text-primary-600 font-medium transition-colors duration-200 relative group"
               >
-                <Plus size={16} className="mr-2" />
-                New Post
+                Posts
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary-600 group-hover:w-full transition-all duration-200"></span>
               </Link>
-            )}
-          </nav>
 
-          {/* Right Side */}
-          <div className="flex items-center space-x-4">
+              {isAuthenticated && (
+                <Link
+                  to="/create-post"
+                  className="flex items-center bg-gradient-to-r from-primary-600 to-blue-600 hover:from-primary-700 hover:to-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 shadow-sm hover:shadow-md transform hover:-translate-y-0.5"
+                >
+                  <Plus size={16} className="mr-2" />
+                  New Post
+                </Link>
+              )}
+            </nav>
+
+            {/* Search Bar */}
+            <div className="flex-1 max-w-md">
+              <SearchBar />
+            </div>
+          </div>
+
+          {/* Mobile Navigation & Search */}
+          <div className="lg:hidden flex-1 mx-4">
+            <SearchBar />
+          </div>
+
+          {/* Right: User Menu & Notifications */}
+          <div className="flex items-center space-x-3">
             {isAuthenticated ? (
               <>
                 {/* Notifications */}

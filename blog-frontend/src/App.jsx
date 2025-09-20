@@ -9,7 +9,7 @@ import Register from "./pages/Register";
 import PostDetailPage from "./pages/PostDetailPage";
 import Profile from "./pages/Profile";
 import CreatePost from "./pages/CreatePost";
-// import Posts from "./pages/Posts";
+import Posts from "./pages/Posts";
 import "./index.css";
 
 function App() {
@@ -25,7 +25,7 @@ function App() {
               <Route path="/register" element={<Register />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/create-post" element={<CreatePost />} />
-              {/* <Route path="/posts" element={<Posts />} /> */}
+              <Route path="/posts" element={<Posts />} />
               <Route path="/posts/:id" element={<PostDetailPage />} />
             </Routes>
           </main>

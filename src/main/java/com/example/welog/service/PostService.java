@@ -205,4 +205,10 @@ public class PostService {
 
         postRepository.softDelete(id);
     }
+
+    public Page<PostResponseDto> searchPostsByTitle(String title, Pageable pageable) {
+        Page<Post> page = postRepository.findByTitleContainingIgnoreCase(title, pageable);
+
+        return page.map(ResponseDtoMapper::mapToPostResponseDto);
+    }
 }

@@ -4,6 +4,8 @@ import java.util.Optional;
 
 import jakarta.transaction.Transactional;
 import org.hibernate.annotations.Where;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.NativeQuery;
@@ -17,6 +19,8 @@ import com.example.welog.model.Post;
 public interface PostRepository extends JpaRepository<Post, Long> {
     // Define methods for querying posts, e.g., by slug, author, etc.
     Optional<Post> findBySlug(String slug);
+
+    Page<Post> findByTitleContainingIgnoreCase(String title, Pageable pageable);
 
     // Additional query methods can be defined here
     @Modifying

@@ -3,6 +3,9 @@ package com.example.welog.controller;
 import java.util.List;
 
 import jakarta.validation.Valid;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +15,9 @@ import com.example.welog.dto.PostCreateDto;
 import com.example.welog.dto.PostPatchDto;
 import com.example.welog.dto.PostResponseDto;
 import com.example.welog.service.PostService;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequestMapping("/api/v1/posts")
@@ -62,4 +68,12 @@ public class PostController {
         postService.deletePost(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<Page<PostResponseDto>> searchPostsByTitle(@RequestParam String title, @RequestParam( required = false, defaultValue = "0") int page, @RequestParam(required = false, defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<PostResponseDto> searchResults = postService.searchPostsByTitle(title, pageable);
+        return ResponseEntity.ok(searchResults);
+    }
+    
 }
