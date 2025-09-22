@@ -17,6 +17,8 @@ public class PostCreateDto {
     @NotBlank(message = "Content is required")
     private String content;
     
+    private String excerpt;
+    
     private String coverImage;
 }
 

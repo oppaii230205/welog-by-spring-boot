@@ -89,18 +89,29 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponse> handleIllegalArgument(IllegalArgumentException ex, WebRequest request) {
+        ErrorResponse error = new ErrorResponse(
+            HttpStatus.BAD_REQUEST.value(),
+            ex.getMessage(),
+            LocalDateTime.now(),
+            request.getDescription(false)
+        );
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
     
-    // @ExceptionHandler(Exception.class)
-    // public ResponseEntity<ErrorResponse> handleGlobalException(
-    //         Exception ex, WebRequest request) {
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleGlobalException(
+            Exception ex, WebRequest request) {
         
-    //     ErrorResponse errorResponse = new ErrorResponse(
-    //         HttpStatus.INTERNAL_SERVER_ERROR.value(),
-    //         "Internal server error",
-    //         LocalDateTime.now(),
-    //         request.getDescription(false)
-    //     );
+        ErrorResponse errorResponse = new ErrorResponse(
+            HttpStatus.INTERNAL_SERVER_ERROR.value(),
+            ex.getMessage() != null ? ex.getMessage() : "Internal server error",
+            LocalDateTime.now(),
+            request.getDescription(false)
+        );
         
-    //     return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
-    // }
+        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }

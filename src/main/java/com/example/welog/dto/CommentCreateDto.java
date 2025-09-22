@@ -14,4 +14,6 @@ public class CommentCreateDto {
     private String content;
 
     private Long postId;
+
+    private Long parentId;
 }
