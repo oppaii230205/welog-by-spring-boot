@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect, useCallback } from "react";
 import { Search, X, Clock, TrendingUp } from "lucide-react";
 import { postService } from "../../services/postService";
 import { useNavigate } from "react-router-dom";
+import API_URL from "../../config";
 
 const SearchBar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -170,7 +171,11 @@ const SearchBar = () => {
                     >
                       {post.coverImage && (
                         <img
-                          src={`/img/posts/${post.coverImage}`}
+                          src={
+                            post.coverImage.startsWith("http")
+                              ? post.coverImage
+                              : `${API_URL}/img/posts/${post.coverImage}`
+                          }
                           alt={post.title}
                           className="w-12 h-12 rounded object-cover mr-3 flex-shrink-0"
                         />
