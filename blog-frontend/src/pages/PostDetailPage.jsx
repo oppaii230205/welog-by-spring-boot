@@ -158,7 +158,11 @@ const PostDetailPage = () => {
       {post.coverImage && (
         <div className="relative h-96 md:h-[500px] overflow-hidden">
           <img
-            src={`${API_URL}/img/posts/${post.coverImage}`}
+            src={
+              post.coverImage.includes("http")
+                ? post.coverImage
+                : `${API_URL}/img/posts/${post.coverImage}`
+            }
             alt={post.title}
             className="w-full h-full object-cover"
           />
@@ -185,7 +189,11 @@ const PostDetailPage = () => {
                 <div className="flex items-center">
                   {post.author?.photo ? (
                     <img
-                      src={`${API_URL}/img/users/${post.author.photo}`}
+                      src={
+                        post.author.photo.includes("http")
+                          ? post.author.photo
+                          : `${API_URL}/img/users/${post.author.photo}`
+                      }
                       alt={post.author.name}
                       className="w-10 h-10 rounded-full mr-3 object-cover border-2 border-white/30"
                     />
@@ -234,7 +242,11 @@ const PostDetailPage = () => {
                 <div className="flex items-center">
                   {post.author?.photo ? (
                     <img
-                      src={`${API_URL}/img/users/${post.author.photo}`}
+                      src={
+                        post.author.photo.includes("http")
+                          ? post.author.photo
+                          : `${API_URL}/img/users/${post.author.photo}`
+                      }
                       alt={post.author.name}
                       className="w-12 h-12 rounded-full mr-3 object-cover"
                     />

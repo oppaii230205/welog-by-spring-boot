@@ -102,7 +102,11 @@ const Header = () => {
                     <div className="flex items-center space-x-2">
                       {user?.photo ? (
                         <img
-                          src={`${API_URL}/img/users/${user.photo}`}
+                          src={
+                            user.photo.includes("http")
+                              ? user.photo
+                              : `${API_URL}/img/users/${user.photo}`
+                          }
                           alt={user.name}
                           className="w-8 h-8 rounded-full object-cover border-2 border-white shadow-sm"
                         />

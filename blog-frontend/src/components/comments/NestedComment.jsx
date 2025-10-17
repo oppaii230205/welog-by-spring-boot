@@ -104,7 +104,11 @@ const NestedComment = ({
             <div className="relative">
               {comment.user?.photo ? (
                 <img
-                  src={`${API_URL}/img/users/${comment.user.photo}`}
+                  src={
+                    comment.user.photo.includes("http")
+                      ? comment.user.photo
+                      : `${API_URL}/img/users/${comment.user.photo}`
+                  }
                   alt={comment.user.name}
                   className="w-8 h-8 rounded-full object-cover"
                 />

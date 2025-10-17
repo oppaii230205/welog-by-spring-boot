@@ -120,7 +120,9 @@ const Profile = () => {
 
   const getAvatarSrc = () => {
     if (profileData?.photo && profileData.photo !== "default.png") {
-      return `${API_URL}/img/users/${profileData.photo}`;
+      return profileData.photo.includes("http")
+        ? profileData.photo
+        : `${API_URL}/img/users/${profileData.photo}`;
     }
     return null;
   };

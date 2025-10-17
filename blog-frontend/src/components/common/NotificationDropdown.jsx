@@ -180,7 +180,11 @@ const NotificationDropdown = () => {
                       <div className="relative flex-shrink-0">
                         {notification.sender?.photo ? (
                           <img
-                            src={`${API_URL}/img/users/${notification.sender.photo}`}
+                            src={
+                              notification.sender.photo.includes("http")
+                                ? notification.sender.photo
+                                : `${API_URL}/img/users/${notification.sender.photo}`
+                            }
                             alt={notification.sender.name}
                             className="w-8 h-8 rounded-full object-cover"
                           />

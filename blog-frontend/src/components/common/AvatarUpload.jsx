@@ -63,7 +63,9 @@ const AvatarUpload = ({ currentAvatar, onAvatarChange, isUploading }) => {
   const getAvatarSrc = () => {
     if (previewUrl) return previewUrl;
     if (currentAvatar && currentAvatar !== "default.png") {
-      return `${API_URL}/img/users/${currentAvatar}`;
+      return currentAvatar.includes("http")
+        ? currentAvatar
+        : `${API_URL}/img/users/${currentAvatar}`;
     }
     return null;
   };

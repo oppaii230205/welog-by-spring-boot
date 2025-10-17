@@ -56,7 +56,11 @@ const CommentSection = ({
           <div className="flex items-center space-x-4 mb-6">
             {currentUser?.photo ? (
               <img
-                src={`${API_URL}/img/users/${currentUser.photo}`}
+                src={
+                  currentUser.photo.includes("http")
+                    ? currentUser.photo
+                    : `${API_URL}/img/users/${currentUser.photo}`
+                }
                 alt={currentUser.name}
                 className="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm"
               />

@@ -10,9 +10,16 @@ const PostCard = ({ post, viewMode = "grid" }) => {
       <div className="bg-white rounded-lg shadow-md border border-gray-100 overflow-hidden hover:shadow-lg transition-all duration-300">
         <div className="flex">
           {post.coverImage && (
-            <Link to={`/posts/${post.id}`} className="block relative overflow-hidden flex-shrink-0">
+            <Link
+              to={`/posts/${post.id}`}
+              className="block relative overflow-hidden flex-shrink-0"
+            >
               <img
-                src={`${API_URL}/img/posts/${post.coverImage}`}
+                src={
+                  post.coverImage.includes("http")
+                    ? post.coverImage
+                    : `${API_URL}/img/posts/${post.coverImage}`
+                }
                 alt={post.title}
                 className="w-48 h-32 object-cover hover:scale-105 transition-transform duration-300"
               />
@@ -30,7 +37,8 @@ const PostCard = ({ post, viewMode = "grid" }) => {
             </h2>
 
             <p className="text-gray-600 mb-4 line-clamp-2 leading-relaxed">
-              {post.excerpt || (post.content && post.content.substring(0, 200))}...
+              {post.excerpt || (post.content && post.content.substring(0, 200))}
+              ...
             </p>
 
             <div className="flex items-center justify-between">
@@ -39,14 +47,20 @@ const PostCard = ({ post, viewMode = "grid" }) => {
                 <div className="flex items-center">
                   {post.author?.photo ? (
                     <img
-                      src={`${API_URL}/img/users/${post.author.photo}`}
+                      src={
+                        post.author.photo.includes("http")
+                          ? post.author.photo
+                          : `${API_URL}/img/users/${post.author.photo}`
+                      }
                       alt={post.author.name}
                       className="w-5 h-5 rounded-full mr-2 object-cover"
                     />
                   ) : (
                     <User size={16} className="mr-2" />
                   )}
-                  <span className="font-medium">{post.author?.name || "Unknown Author"}</span>
+                  <span className="font-medium">
+                    {post.author?.name || "Unknown Author"}
+                  </span>
                 </div>
 
                 <div className="flex items-center">
@@ -61,17 +75,19 @@ const PostCard = ({ post, viewMode = "grid" }) => {
 
               {/* Interaction Buttons */}
               <div className="flex items-center space-x-2">
-                <LikeButton 
-                  postId={post.id} 
+                <LikeButton
+                  postId={post.id}
                   initialLikeCount={post.likeCount || 0}
                 />
-                
-                <Link 
+
+                <Link
                   to={`/posts/${post.id}#comments`}
                   className="flex items-center space-x-1 text-gray-600 hover:text-primary-600 px-3 py-2 rounded-lg hover:bg-primary-50 transition-all duration-200"
                 >
                   <MessageCircle size={18} />
-                  <span className="text-sm font-medium">{post.commentCount || 0}</span>
+                  <span className="text-sm font-medium">
+                    {post.commentCount || 0}
+                  </span>
                 </Link>
               </div>
             </div>
@@ -90,7 +106,11 @@ const PostCard = ({ post, viewMode = "grid" }) => {
           className="block relative overflow-hidden"
         >
           <img
-            src={`${API_URL}/img/posts/${post.coverImage}`}
+            src={
+              post.coverImage.includes("http")
+                ? post.coverImage
+                : `${API_URL}/img/posts/${post.coverImage}`
+            }
             alt={post.title}
             className="w-full h-48 object-cover hover:scale-105 transition-transform duration-300"
           />
@@ -117,7 +137,11 @@ const PostCard = ({ post, viewMode = "grid" }) => {
             <div className="flex items-center">
               {post.author?.photo ? (
                 <img
-                  src={`${API_URL}/img/users/${post.author.photo}`}
+                  src={
+                    post.author.photo.includes("http")
+                      ? post.author.photo
+                      : `${API_URL}/img/users/${post.author.photo}`
+                  }
                   alt={post.author.name}
                   className="w-5 h-5 rounded-full mr-2 object-cover"
                 />

@@ -37,6 +37,10 @@ export const postService = {
     });
   },
   delete: (id) => api.delete(`/posts/${id}`),
-  searchPosts: (title, page = 0, size = 10) => 
-    api.get(`/posts/search?title=${encodeURIComponent(title)}&page=${page}&size=${size}`),
+  searchPosts: (title, page = 0, size = 10) =>
+    api.get(
+      `/posts/search?title=${encodeURIComponent(
+        title
+      )}&page=${page}&size=${size}`
+    ),
 };

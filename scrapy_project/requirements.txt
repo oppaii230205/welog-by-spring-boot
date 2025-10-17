@@ -1,0 +1,21 @@
+# Dev.to Blog Scraper Requirements
+# Install with: pip install -r requirements.txt
+
+scrapy>=2.10.0
+psycopg2-binary>=2.9.0
+itemloaders>=1.0.0
+w3lib>=2.0.0
+itemadapter>=0.7.0
+
+# Optional: For advanced features
+scrapy-splash>=0.8.0  # For JavaScript rendering if needed
+scrapy-user-agents>=0.1.1  # For rotating user agents
+fake-useragent>=1.4.0  # Alternative user agent rotation
+
+# Database and data processing
+pandas>=2.0.0  # For data analysis
+numpy>=1.24.0  # Data processing
+
+# Development and debugging
+scrapy-shell>=0.1.0
+ipython>=8.0.0  # Better interactive shell
