@@ -1,0 +1,62 @@
+version: "3.8"
+
+services:
+  # PostgreSQL Database (Optional - using Supabase instead)
+  # postgres:
+  #   image: postgres:15-alpine
+  #   container_name: welog-postgres
+  #   environment:
+  #     POSTGRES_DB: ${DB_NAME:-welog}
+  #     POSTGRES_USER: ${DB_USERNAME:-postgres}
+  #     POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+  #   ports:
+  #     - "5432:5432"
+  #   volumes:
+  #     - postgres-data:/var/lib/postgresql/data
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-postgres}"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
+  #   networks:
+  #     - welog-network
+
+  # Spring Boot Backend
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: welog-backend
+    environment:
+      # Supabase PostgreSQL connection
+      DB_URL: ${DB_URL}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+
+      # JWT Configuration
+      JWT_SECRET: ${JWT_SECRET:-your-secret-key-change-this-in-production}
+      JWT_EXPIRATION_MS: ${JWT_EXPIRATION_MS:-86400000}
+
+      # Upload directory inside container
+      UPLOAD_DIR: /app/uploads/img
+    ports:
+      - "8080:8080"
+    volumes:
+      # Map local uploads folder to container for persistence
+      - ./uploads:/app/uploads
+    networks:
+      - welog-network
+    restart: unless-stopped
+
+#volumes:
+# Uncomment if using local PostgreSQL
+# postgres-data:
+#   driver: local
+
+# Named volume for production (alternative to bind mount)
+# uploads-data:
+#   driver: local
+
+networks:
+  welog-network:
+    driver: bridge
