@@ -10,20 +10,12 @@
 *.ipr
 *.iws
 
-# Gradle
+# Gradle cache (but keep wrapper and scripts)
 .gradle/
-gradle/
-gradlew
-gradlew.bat
-!gradle/wrapper/gradle-wrapper.jar
-
-# Build output (we copy specific JAR)
-build/
-!build/libs/*.jar
-
-# Source code (not needed in runtime image)
-src/
 bin/
+
+# Build output from local builds
+build/
 target/
 
 # Documentation
