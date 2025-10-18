@@ -26,6 +26,8 @@ dependencies {
 	implementation 'org.springframework.security:spring-security-config'
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
     implementation 'com.fasterxml.jackson.core:jackson-databind'
+	// WebClient for Supabase Storage API
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 //	implementation 'org.flywaydb:flyway-core'
 //	implementation 'org.flywaydb:flyway-database-postgresql:10.4.1'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'

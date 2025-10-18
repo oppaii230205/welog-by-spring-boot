@@ -2,7 +2,12 @@ package com.example.welog.controller;
 
 import com.example.welog.dto.CommentCreateDto;
 import com.example.welog.dto.CommentResponseDto;
+import com.example.welog.model.ERole;
+import com.example.welog.model.Role;
+import com.example.welog.model.User;
 import com.example.welog.service.CommentService;
+import com.example.welog.utils.ResponseDtoMapper;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -33,9 +39,23 @@ class CommentControllerTest {
 
     private CommentResponseDto commentResponseDto;
 
+    private User user;
+    private Role role;
+
     @BeforeEach
-    void setUp() {
-        commentResponseDto = new CommentResponseDto(1L, "Test comment", null, OffsetDateTime.now());
+    void setUp() {  
+    role = new Role();
+    role.setName(ERole.ROLE_USER);
+
+    user = new User();
+    user.setId(1L);
+    user.setName("Test User");
+    user.setEmail("test@example.com");
+    user.setPassword("encodedPassword");
+    user.setRoles(Set.of(role));
+
+
+        commentResponseDto = new CommentResponseDto(1L, "Test comment", ResponseDtoMapper.mapToUserResponseDto(user), 1, Set.of(), OffsetDateTime.now());
     }
 
     @Test

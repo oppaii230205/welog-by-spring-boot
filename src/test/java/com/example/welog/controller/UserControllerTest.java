@@ -17,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -39,7 +40,7 @@ class UserControllerTest {
 
     @BeforeEach
     void setUp() {
-        userResponseDto = new UserResponseDto(1L, "Test User", "test@example.com", null, Collections.emptySet());
+        userResponseDto = new UserResponseDto(1L, "Test User", "test@example.com", null, OffsetDateTime.now(), Collections.emptySet());
     }
 
     @Test
@@ -72,7 +73,7 @@ class UserControllerTest {
         patchDto.setName("Updated Name");
 
         when(userService.update(anyLong(), any(UserPatchDto.class)))
-                .thenReturn(new UserResponseDto(1L, "Updated Name", "test@example.com", null, Collections.emptySet()));
+                .thenReturn(new UserResponseDto(1L, "Updated Name", "test@example.com", null, OffsetDateTime.now(), Collections.emptySet()));
 
         ResponseEntity<UserResponseDto> response = userController.updateUser(1L, patchDto);
 

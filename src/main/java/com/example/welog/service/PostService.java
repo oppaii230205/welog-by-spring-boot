@@ -41,14 +41,16 @@ public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final AuthService authService;
+    private final SupabaseStorageService supabaseStorageService;
 
-    @Value("${app.upload.dir}")
+    @Value("${app.upload.dir:uploads/img}")
     private String uploadDir;
 
-    public PostService(PostRepository postRepository, UserRepository userRepository, AuthService authService) {
+    public PostService(PostRepository postRepository, UserRepository userRepository, AuthService authService, SupabaseStorageService supabaseStorageService) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
         this.authService = authService;
+        this.supabaseStorageService = supabaseStorageService;
     }
 
     public List<PostResponseDto> getAllPosts(Pageable pageable) {
@@ -159,33 +161,22 @@ public class PostService {
 
         Post post = postRepository.findById(id).get();
 
-        // ensure upload dir exists
-        Path uploadPath = Paths.get(uploadDir).resolve("posts");
-        if (!Files.exists(uploadPath)) {
-            try {
-                Files.createDirectories(uploadPath);
-            } catch (IOException e) {
-                throw new RuntimeException("Failed to create upload directory", e);
-            }
-        }
-
-        // Handle image upload logic here
+        // Handle cover image upload to Supabase Storage
         if (coverImage != null && !coverImage.isEmpty()) {
-            String originalFilename = coverImage.getOriginalFilename();
-            String fileExtension = "";
-
-            if (originalFilename != null && originalFilename.contains(".")) {
-                fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
-            }
-
-            String newFilename = "post_" + post.getId() + "_" + System.currentTimeMillis() + fileExtension;
-            Path filePath = uploadPath.resolve(newFilename);
-
             try {
-                Files.copy(coverImage.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-                post.setCoverImage(newFilename);
+                // Delete old cover image if exists and is from Supabase
+                if (post.getCoverImage() != null && post.getCoverImage().startsWith("http")) {
+                    supabaseStorageService.deleteFile(post.getCoverImage(), "post-covers");
+                }
+
+                // Upload new cover image to Supabase Storage
+                String coverImageUrl = supabaseStorageService.uploadFile(coverImage, "post-covers");
+                post.setCoverImage(coverImageUrl);
+                
+                logger.info("Post cover image uploaded successfully: postId={}, url={}", post.getId(), coverImageUrl);
             } catch (IOException e) {
-                throw new RuntimeException("Failed to store file " + newFilename, e);
+                logger.error("Failed to upload post cover image: postId={}, error={}", post.getId(), e.getMessage());
+                throw new RuntimeException("Failed to upload cover image: " + e.getMessage(), e);
             }
         }
 

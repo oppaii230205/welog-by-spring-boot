@@ -33,17 +33,15 @@ services:
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
 
+      # Supabase Storage
+      SUPABASE_URL: ${SUPABASE_URL}
+      SUPABASE_KEY: ${SUPABASE_KEY}
+
       # JWT Configuration
       JWT_SECRET: ${JWT_SECRET:-your-secret-key-change-this-in-production}
       JWT_EXPIRATION_MS: ${JWT_EXPIRATION_MS:-86400000}
-
-      # Upload directory inside container
-      UPLOAD_DIR: /app/uploads/img
     ports:
       - "8080:8080"
-    volumes:
-      # Map local uploads folder to container for persistence
-      - ./uploads:/app/uploads
     networks:
       - welog-network
     restart: unless-stopped

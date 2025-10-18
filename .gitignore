@@ -38,3 +38,5 @@ out/
 
 .env.properties
 .env
+
+scrapy_project/venv/Lib/

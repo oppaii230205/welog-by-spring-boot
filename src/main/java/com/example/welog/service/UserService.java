@@ -32,13 +32,15 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final AuthService authService;
+    private final SupabaseStorageService supabaseStorageService;
 
-    @Value("${app.upload.dir}")
+    @Value("${app.upload.dir:uploads/img}")
     private String uploadDir;
 
-    public UserService(UserRepository userRepository, AuthService authService) {
+    public UserService(UserRepository userRepository, AuthService authService, SupabaseStorageService supabaseStorageService) {
         this.userRepository = userRepository;
         this.authService = authService;
+        this.supabaseStorageService = supabaseStorageService;
     }
 
     public List<UserResponseDto> getAll(Pageable pageable) {
@@ -117,38 +119,29 @@ public class UserService {
         // Get the authenticated user's ID from the security context
         UserDetailsImpl userDetails = authService.getCurrentUser();
 
-        User user = userRepository.findById(userDetails.getId()).orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userDetails.getId()));
+        User user = userRepository.findById(userDetails.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userDetails.getId()));
 
-        // ensure upload dir exists
-        Path uploadPath = Paths.get(uploadDir).resolve("users");
-        if (!Files.exists(uploadPath)) {
-            try {
-                Files.createDirectories(uploadPath);
-            } catch (IOException e) {
-                throw new RuntimeException("Failed to create upload directory", e);
-            }
-        }
-
+        // Handle photo upload to Supabase Storage
         if (photo != null && !photo.isEmpty()) {
-            String originalFilename = photo.getOriginalFilename();
-            String fileExtension = "";
-
-            if (originalFilename != null && originalFilename.contains(".")) {
-                fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
-            }
-
-            String newFilename = "user_" + user.getId() + "_" + System.currentTimeMillis() + fileExtension;
-            Path filePath = uploadPath.resolve(newFilename);
-
             try {
-                Files.copy(photo.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-                user.setPhoto(newFilename);
+                // Delete old photo if exists and is from Supabase
+                if (user.getPhoto() != null && user.getPhoto().startsWith("http")) {
+                    supabaseStorageService.deleteFile(user.getPhoto(), "user-avatars");
+                }
+
+                // Upload new photo to Supabase Storage
+                String photoUrl = supabaseStorageService.uploadFile(photo, "user-avatars");
+                user.setPhoto(photoUrl);
+                
+                logger.info("User avatar uploaded successfully: userId={}, url={}", user.getId(), photoUrl);
             } catch (IOException e) {
-                throw new RuntimeException("Failed to store file " + newFilename, e);
+                logger.error("Failed to upload user avatar: userId={}, error={}", user.getId(), e.getMessage());
+                throw new RuntimeException("Failed to upload avatar: " + e.getMessage(), e);
             }
         }
         
-        // TODO: validate name and email
+        // Update name and email
         if (name != null && !name.isEmpty()) {
             user.setName(name);
         }
@@ -156,9 +149,6 @@ public class UserService {
         if (email != null && !email.isEmpty()) {
             user.setEmail(email);
         }
-        
-        // logger.debug("+++++++++++++++++++++++++++++++++++++++++++++++++++++");
-        // logger.debug(">> Updated user info: " + user.getName() + ", " + user.getEmail() + ", " + user.getPhoto());
 
         return ResponseDtoMapper.mapToUserResponseDto(userRepository.save(user));
     }
